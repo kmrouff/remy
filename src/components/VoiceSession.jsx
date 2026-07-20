@@ -36,7 +36,11 @@ export default function VoiceSession({
   setCookingStepIndex,
   shoppingConfirmations,
   setShoppingConfirmations,
-  onEnd,
+  isSaved,
+  onSave,
+  onPause,
+  onFinish,
+  onSaveAndEnd,
   onRetry,
   onBack,
 }) {
@@ -44,6 +48,7 @@ export default function VoiceSession({
   const [agentMode, setAgentMode] = useState('listening') // listening | speaking
   const [log, setLog] = useState([])
   const [error, setError] = useState(null)
+  const [showWrapUp, setShowWrapUp] = useState(false)
 
   const conversationRef = useRef(null)
   // Mirror of the latest props/state so the client-tool closures (registered
@@ -147,16 +152,16 @@ export default function VoiceSession({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function handleEnd() {
-    setStatus('disconnecting')
-    await conversationRef.current?.endSession()
-    onEnd()
-  }
-
   async function handleChangeMode() {
     setStatus('disconnecting')
     await conversationRef.current?.endSession()
     onBack()
+  }
+
+  async function endThenRun(action) {
+    setStatus('disconnecting')
+    await conversationRef.current?.endSession()
+    action()
   }
 
   return (
@@ -168,6 +173,10 @@ export default function VoiceSession({
           {status === 'connected' ? (agentMode === 'speaking' ? 'Agent speaking…' : 'Listening…') : status}
         </span>
       </header>
+
+      <button type="button" className="voice-session__save" onClick={onSave} disabled={isSaved}>
+        {isSaved ? 'Saved ✓' : 'Save recipe'}
+      </button>
 
       {error && <p className="voice-session__error">{error}</p>}
 
@@ -194,13 +203,28 @@ export default function VoiceSession({
             Back to recipe
           </button>
         </div>
+      ) : showWrapUp ? (
+        <div className="voice-session__wrap-up">
+          <button type="button" className="voice-session__retry" onClick={() => endThenRun(onPause)}>
+            Pause — resume later
+          </button>
+          <button type="button" className="voice-session__back" onClick={() => endThenRun(onSaveAndEnd)}>
+            Save recipe & end
+          </button>
+          <button type="button" className="voice-session__back" onClick={() => endThenRun(onFinish)}>
+            Finish, all done
+          </button>
+          <button type="button" className="voice-session__cancel-wrap-up" onClick={() => setShowWrapUp(false)}>
+            Keep going
+          </button>
+        </div>
       ) : (
         <div className="voice-session__recovery">
           <button type="button" className="voice-session__back" onClick={handleChangeMode}>
             Change mode
           </button>
-          <button type="button" className="voice-session__end" onClick={handleEnd}>
-            End session
+          <button type="button" className="voice-session__end" onClick={() => setShowWrapUp(true)}>
+            Wrap up
           </button>
         </div>
       )}

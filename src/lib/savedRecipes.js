@@ -32,3 +32,18 @@ export function saveRecipe(recipe) {
 export function removeSavedRecipe(id) {
   writeAll(readAll().filter((r) => r.id !== id))
 }
+
+/**
+ * Saves a recipe with a progress snapshot attached, so it can be resumed
+ * later from where the user paused.
+ * @param {object} recipe
+ * @param {{ mode: string, cookingStepIndex: number, shoppingConfirmations: object }} progress
+ */
+export function saveRecipeProgress(recipe, progress) {
+  return saveRecipe({ ...recipe, progress: { ...progress, pausedAt: Date.now() } })
+}
+
+/** Clears a saved recipe's progress snapshot (e.g. once finished or restarted), keeping the recipe itself. */
+export function clearRecipeProgress(id) {
+  writeAll(readAll().map((r) => (r.id === id ? { ...r, progress: null } : r)))
+}

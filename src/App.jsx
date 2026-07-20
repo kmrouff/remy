@@ -3,7 +3,13 @@ import VoiceSession from './components/VoiceSession'
 import ModeToggle from './components/ModeToggle'
 import RecipeInput from './components/RecipeInput'
 import RecipeLibrary from './components/RecipeLibrary'
-import { getSavedRecipes, saveRecipe, removeSavedRecipe } from './lib/savedRecipes'
+import {
+  getSavedRecipes,
+  saveRecipe,
+  removeSavedRecipe,
+  saveRecipeProgress,
+  clearRecipeProgress,
+} from './lib/savedRecipes'
 import './App.css'
 
 // Fallback so the voice loop can still be tested/demoed without a working
@@ -37,21 +43,22 @@ export default function App() {
   const [shoppingConfirmations, setShoppingConfirmations] = useState({})
   const [sessionKey, setSessionKey] = useState(0)
 
+  function refreshSavedRecipes() {
+    setSavedRecipes(getSavedRecipes())
+  }
+
+  function resetProgressState() {
+    setCookingStepIndex(0)
+    setShoppingConfirmations({})
+  }
+
   function handleExtracted(extracted) {
     setRecipe(extracted)
     setScreen('confirm')
   }
 
-  function handleEndSession() {
-    setCookingStepIndex(0)
-    setShoppingConfirmations({})
-    setRecipe(null)
-    setScreen('input')
-  }
-
   function handleBackToRecipe() {
-    setCookingStepIndex(0)
-    setShoppingConfirmations({})
+    resetProgressState()
     setScreen('confirm')
   }
 
@@ -62,12 +69,12 @@ export default function App() {
   function handleSaveRecipe() {
     const saved = saveRecipe(recipe)
     setRecipe(saved)
-    setSavedRecipes(getSavedRecipes())
+    refreshSavedRecipes()
   }
 
   function handleRemoveSaved(id) {
     removeSavedRecipe(id)
-    setSavedRecipes(getSavedRecipes())
+    refreshSavedRecipes()
   }
 
   function handleSelectSaved(saved) {
@@ -75,7 +82,53 @@ export default function App() {
     setScreen('confirm')
   }
 
+  function handleResume(progress) {
+    setMode(progress.mode)
+    setCookingStepIndex(progress.cookingStepIndex)
+    setShoppingConfirmations(progress.shoppingConfirmations)
+    setScreen('session')
+  }
+
+  function handleStartOver() {
+    if (recipe.id) {
+      clearRecipeProgress(recipe.id)
+      refreshSavedRecipes()
+      setRecipe((prev) => (prev ? { ...prev, progress: null } : prev))
+    }
+    resetProgressState()
+    setScreen('session')
+  }
+
+  // Called from within an active VoiceSession, which ends its own call
+  // before invoking these — App just needs to persist state and navigate.
+  function handlePause() {
+    const saved = saveRecipeProgress(recipe, { mode, cookingStepIndex, shoppingConfirmations })
+    refreshSavedRecipes()
+    setRecipe(saved)
+    resetProgressState()
+    setScreen('input')
+  }
+
+  function handleFinish() {
+    if (recipe.id) {
+      clearRecipeProgress(recipe.id)
+      refreshSavedRecipes()
+    }
+    resetProgressState()
+    setRecipe(null)
+    setScreen('input')
+  }
+
+  function handleSaveAndEnd() {
+    const saved = saveRecipe(recipe)
+    refreshSavedRecipes()
+    setRecipe(saved)
+    resetProgressState()
+    setScreen('input')
+  }
+
   if (screen === 'session' && recipe) {
+    const isSaved = Boolean(recipe.id) && savedRecipes.some((r) => r.id === recipe.id)
     return (
       <VoiceSession
         key={sessionKey}
@@ -85,7 +138,11 @@ export default function App() {
         setCookingStepIndex={setCookingStepIndex}
         shoppingConfirmations={shoppingConfirmations}
         setShoppingConfirmations={setShoppingConfirmations}
-        onEnd={handleEndSession}
+        isSaved={isSaved}
+        onSave={handleSaveRecipe}
+        onPause={handlePause}
+        onFinish={handleFinish}
+        onSaveAndEnd={handleSaveAndEnd}
         onRetry={handleRetry}
         onBack={handleBackToRecipe}
       />
@@ -105,6 +162,8 @@ export default function App() {
 
   if (screen === 'confirm' && recipe) {
     const isSaved = Boolean(recipe.id) && savedRecipes.some((r) => r.id === recipe.id)
+    const progress = recipe.progress
+
     return (
       <main className="landing">
         <h1>Remy</h1>
@@ -112,9 +171,26 @@ export default function App() {
         <div className="landing__card">
           <h2>{recipe.title}</h2>
           <p>{recipe.ingredients.length} ingredients · {recipe.steps.length} steps</p>
-          <button type="button" className="landing__start" onClick={() => setScreen('session')}>
-            Start {mode === 'shopping' ? 'shopping' : 'cooking'}
-          </button>
+
+          {progress ? (
+            <>
+              <p className="landing__progress-note">
+                Paused in {progress.mode} mode
+                {progress.mode === 'cooking' ? ` at step ${progress.cookingStepIndex + 1}` : ''}.
+              </p>
+              <button type="button" className="landing__start" onClick={() => handleResume(progress)}>
+                Resume where I left off
+              </button>
+              <button type="button" className="landing__save" onClick={handleStartOver}>
+                Start over
+              </button>
+            </>
+          ) : (
+            <button type="button" className="landing__start" onClick={() => setScreen('session')}>
+              Start {mode === 'shopping' ? 'shopping' : 'cooking'}
+            </button>
+          )}
+
           <button type="button" className="landing__save" onClick={handleSaveRecipe} disabled={isSaved}>
             {isSaved ? 'Saved ✓' : 'Save recipe'}
           </button>

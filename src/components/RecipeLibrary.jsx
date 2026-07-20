@@ -14,6 +14,12 @@ export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
                 <span className="recipe-library__item-title">{recipe.title}</span>
                 <span className="recipe-library__item-meta">
                   {recipe.ingredients.length} ingredients · {recipe.steps.length} steps
+                  {recipe.progress && (
+                    <>
+                      {' '}
+                      · <span className="recipe-library__paused">Paused</span>
+                    </>
+                  )}
                 </span>
               </button>
               <button

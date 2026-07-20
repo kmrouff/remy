@@ -323,6 +323,21 @@
   50% { opacity: 0.35; }
 }
 
+.voice-session__save {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-h);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.voice-session__save:disabled {
+  opacity: 0.6;
+}
+
 .voice-session__error {
   color: var(--error);
   background: var(--error-bg);
@@ -617,5 +632,38 @@
   border-radius: 10px;
   background: transparent;
   color: #fff;
+  font-weight: 600;
+}
+
+/* Wrap-up panel */
+
+.voice-session__wrap-up {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.voice-session__wrap-up .voice-session__retry,
+.voice-session__wrap-up .voice-session__back {
+  flex: none;
+  width: 100%;
+}
+
+.voice-session__cancel-wrap-up {
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.landing__progress-note {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.recipe-library__paused {
+  color: var(--accent);
   font-weight: 600;
 }
