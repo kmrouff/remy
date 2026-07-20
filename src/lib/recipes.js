@@ -31,3 +31,29 @@ export async function extractRecipeFromPhotos(dataUrls) {
   }
   return data
 }
+
+/**
+ * @param {string} query
+ * @returns {Promise<Array<{id: number, title: string, image: string|null}>>}
+ */
+export async function searchRecipes(query) {
+  const response = await fetch(`/api/search-recipes?q=${encodeURIComponent(query)}`)
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to search recipes')
+  }
+  return data.results
+}
+
+/**
+ * @param {number} id - Spoonacular recipe id, from searchRecipes results
+ * @returns {Promise<{title: string, ingredients: Array<{item: string, quantity?: string, unit?: string}>, steps: string[]}>}
+ */
+export async function getRecipeDetails(id) {
+  const response = await fetch(`/api/recipe-details?id=${encodeURIComponent(id)}`)
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to load recipe details')
+  }
+  return data
+}

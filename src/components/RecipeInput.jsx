@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { extractRecipeFromUrl, extractRecipeFromPhotos } from '../lib/recipes'
 import { resizeImageFile } from '../lib/image'
 import CameraCapture from './CameraCapture'
+import RecipeSearch from './RecipeSearch'
 
 const MAX_PHOTOS = 6
 
@@ -11,6 +12,7 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
   const [status, setStatus] = useState('idle') // idle | loading | error
   const [error, setError] = useState(null)
   const [showCamera, setShowCamera] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
   const galleryInputRef = useRef(null)
   const nextPhotoId = useRef(0)
 
@@ -73,6 +75,18 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
         onDone={(dataUrls) => {
           addPhotos(dataUrls)
           setShowCamera(false)
+        }}
+      />
+    )
+  }
+
+  if (showSearch) {
+    return (
+      <RecipeSearch
+        onCancel={() => setShowSearch(false)}
+        onSelect={(recipe) => {
+          setShowSearch(false)
+          onExtracted(recipe)
         }}
       />
     )
@@ -154,6 +168,9 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
       )}
 
       {error && <p className="recipe-input__error">{error}</p>}
+      <button type="button" className="recipe-input__sample" onClick={() => setShowSearch(true)}>
+        Or search recipes by name
+      </button>
       <button type="button" className="recipe-input__sample" onClick={onUseSample}>
         Or try a sample recipe
       </button>
