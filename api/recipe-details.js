@@ -54,7 +54,7 @@ export default async function handler(req, res) {
       throw new Error('This recipe is missing structured ingredients or steps')
     }
 
-    res.status(200).json({ title: data.title, ingredients, steps })
+    res.status(200).json({ title: data.title, image: data.image ?? null, ingredients, steps })
   } catch (e) {
     res.status(502).json({ error: `Could not load recipe details: ${e.message}` })
   }

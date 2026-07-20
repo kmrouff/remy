@@ -23,6 +23,7 @@ export default async function handler(req, res) {
     url.searchParams.set('apiKey', apiKey)
     url.searchParams.set('query', query)
     url.searchParams.set('number', '10')
+    url.searchParams.set('addRecipeInformation', 'true')
 
     const response = await fetch(url, { signal: AbortSignal.timeout(10_000) })
     if (!response.ok) throw new Error(`Spoonacular responded with ${response.status}`)
@@ -32,6 +33,8 @@ export default async function handler(req, res) {
       id: r.id,
       title: r.title,
       image: r.image ?? null,
+      readyInMinutes: r.readyInMinutes ?? null,
+      servings: r.servings ?? null,
     }))
 
     res.status(200).json({ results })

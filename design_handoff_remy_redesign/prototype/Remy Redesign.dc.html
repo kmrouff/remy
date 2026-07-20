@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; }
+  a { color: #5C7563; }
+  a:hover { color: #3F5748; }
+  @keyframes remyPulse { 0%,100%{ opacity:1 } 50%{ opacity:.3 } }
+  @keyframes remyBar { 0%,100%{ transform:scaleY(.35) } 50%{ transform:scaleY(1) } }
+  @keyframes remyShimmer { 0%{ background-position:-260px 0 } 100%{ background-position:260px 0 } }
+  @keyframes remyRing { 0%{ transform:scale(.8); opacity:.5 } 100%{ transform:scale(1.7); opacity:0 } }
+  @keyframes remyDrift { 0%,100%{ background-position:50% 40%; } 50%{ background-position:50% 60%; } }
+  .remy-shimmer { background:linear-gradient(90deg,#EFE8DC 0%,#F7F2E9 50%,#EFE8DC 100%); background-size:260px 100%; animation:remyShimmer 1.4s ease-in-out infinite; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#DDD7CE; padding:56px 56px 120px; box-sizing:border-box; font-family:'Hanken Grotesk',system-ui,sans-serif;">
+  <div style="max-width:1760px; margin:0 auto;">
+    <div style="margin-bottom:6px; font:600 12px/1 ui-monospace,monospace; letter-spacing:1.5px; text-transform:uppercase; color:#8a8377;">Remy · full redesign</div>
+    <h1 style="font-family:'Newsreader',Georgia,serif; font-weight:500; font-size:40px; color:#23201A; margin:0 0 10px; letter-spacing:-0.5px;">A calm, hands-free kitchen companion</h1>
+    <p style="max-width:820px; margin:0 0 8px; color:#6E6559; font-size:16px; line-height:1.55;">Warm-neutral Scandinavian system committed on <strong>1b</strong> — the whole screen takes on the mode's colour. Sage for Shopping (calm / gathering), terracotta for Cooking (warm / active). Newsreader + Hanken Grotesk. Every screen is layout-stable under long titles and variable counts.</p>
+
+    <!-- ============ GROUP 1 : AUTH ============ -->
+    <div style="margin:52px 0 22px; padding-bottom:12px; border-bottom:1px solid #C9C2B6;">
+      <div style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">1 · Signing in</div>
+      <div style="color:#6E6559; font-size:14.5px; margin-top:4px;">Web-first entry. One-tap Apple or Google, email &amp; password, or a magic link. Sign-up stays minimal.</div>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+
+      <!-- Log in -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">LOG IN</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:82px 26px 40px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:26px;">
+              <img src="assets/remy-mark.png" alt="Remy" style="height:66px; width:auto; margin-bottom:12px;" />
+              <span style="font-family:'Newsreader',serif; font-size:28px; color:#23201A; line-height:1;">Remy</span>
+              <span style="font:600 10px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.8px; text-transform:uppercase; color:#9C9284; margin-top:8px;">Invisible sous-chef</span>
+            </div>
+            <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:25px; text-align:center; color:#23201A; margin:0 0 4px;">Welcome back</h1>
+            <p style="text-align:center; color:#6E6559; font-size:14px; margin:0 0 24px;">Sign in to pick up where you left off.</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <button style="display:flex; align-items:center; justify-content:center; gap:10px; padding:15px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;"><svg width="16" height="19" viewBox="0 0 24 24" fill="#F4EFE7"><path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.98-.83.9-2.18 1.6-3.3 1.5-.14-1.1.42-2.28 1.08-3 .74-.82 2.06-1.44 3.35-1.48zM20.94 17.1c-.6 1.38-.88 2-1.65 3.22-1.08 1.7-2.6 3.82-4.48 3.83-1.67.02-2.1-1.08-4.37-1.08-2.27 0-2.74 1.06-4.4 1.09-1.88.03-3.32-1.84-4.4-3.54C-1.4 15.6.9 8.9 4.9 8.75c1.63-.06 2.77 1.06 3.7 1.06.92 0 2.6-1.31 4.38-1.12.74.03 2.82.3 4.16 2.26-3.65 2-3.07 6.6.8 8.15z"/></svg>Continue with Apple</button>
+              <button style="display:flex; align-items:center; justify-content:center; gap:10px; padding:15px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 15px/1 'Hanken Grotesk',sans-serif;"><svg width="17" height="17" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>Continue with Google</button>
+              <div style="display:flex; align-items:center; gap:14px; margin:4px 0; color:#B3A794; font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.5px;"><span style="flex:1; height:1px; background:#E1D8C9;"></span>OR<span style="flex:1; height:1px; background:#E1D8C9;"></span></div>
+              <input placeholder="Email" style="padding:15px 16px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+              <input placeholder="Password" type="password" style="padding:15px 16px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+              <button style="padding:16px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 16px/1 'Hanken Grotesk',sans-serif; margin-top:2px;">Log in</button>
+              <button style="border:none; background:transparent; color:#5C7563; font:600 14px/1 'Hanken Grotesk',sans-serif; padding:8px;">Email me a magic link instead</button>
+            </div>
+            <div style="flex:1;"></div>
+            <div style="text-align:center; font-size:15px; color:#3A352C; padding-top:18px; border-top:1px solid #E7DFD1;">New to Remy? <a href="#" style="color:#5C7563; font-weight:700; text-decoration:underline; text-underline-offset:3px;">Create account</a></div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Sign up -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">SIGN UP · MINIMAL</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:96px 26px 40px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:36px;">
+              <img src="assets/remy-mark.png" alt="Remy" style="height:56px; width:auto; margin-bottom:20px;" />
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:27px; color:#23201A; margin:0 0 6px; letter-spacing:-0.3px;">Create your account</h1>
+              <p style="color:#6E6559; font-size:14.5px; margin:0; max-width:250px; line-height:1.5;">Your recipes, saved and ready — on any device.</p>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              <button style="display:flex; align-items:center; justify-content:center; gap:10px; padding:16px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;"><svg width="16" height="19" viewBox="0 0 24 24" fill="#F4EFE7"><path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.98-.83.9-2.18 1.6-3.3 1.5-.14-1.1.42-2.28 1.08-3 .74-.82 2.06-1.44 3.35-1.48zM20.94 17.1c-.6 1.38-.88 2-1.65 3.22-1.08 1.7-2.6 3.82-4.48 3.83-1.67.02-2.1-1.08-4.37-1.08-2.27 0-2.74 1.06-4.4 1.09-1.88.03-3.32-1.84-4.4-3.54C-1.4 15.6.9 8.9 4.9 8.75c1.63-.06 2.77 1.06 3.7 1.06.92 0 2.6-1.31 4.38-1.12.74.03 2.82.3 4.16 2.26-3.65 2-3.07 6.6.8 8.15z"/></svg>Sign up with Apple</button>
+              <button style="display:flex; align-items:center; justify-content:center; gap:10px; padding:16px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 15px/1 'Hanken Grotesk',sans-serif;"><svg width="17" height="17" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>Sign up with Google</button>
+              <div style="display:flex; align-items:center; gap:14px; margin:4px 0; color:#B3A794; font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.5px;"><span style="flex:1; height:1px; background:#E1D8C9;"></span>OR<span style="flex:1; height:1px; background:#E1D8C9;"></span></div>
+              <input placeholder="Email" style="padding:16px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+              <input placeholder="Choose a password" type="password" style="padding:16px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+              <button style="padding:16px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 16px/1 'Hanken Grotesk',sans-serif; margin-top:2px;">Create account</button>
+            </div>
+            <p style="text-align:center; color:#9C9284; font-size:12px; line-height:1.5; margin:16px 0 0;">By continuing you agree to our <a href="#" style="color:#8a8377;">Terms</a> &amp; <a href="#" style="color:#8a8377;">Privacy Policy</a>.</p>
+            <div style="flex:1;"></div>
+            <div style="text-align:center; font-size:15px; color:#3A352C; padding-top:18px; border-top:1px solid #E7DFD1;">Already have an account? <a href="#" style="color:#5C7563; font-weight:700; text-decoration:underline; text-underline-offset:3px;">Log in</a></div>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+
+    <!-- ============ GROUP 2 : WELCOME (FIRST RUN) ============ -->
+    <div style="margin:64px 0 22px; padding-bottom:12px; border-bottom:1px solid #C9C2B6;">
+      <div style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">2 · First-run welcome</div>
+      <div style="color:#6E6559; font-size:14.5px; margin-top:4px;">Shown once, right after a first login. Four calm cards with abstracted diagrams explain the whole point — talk to Remy hands-free — and the flow: add a recipe, pick a mode, cook or shop, pause any time.</div>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+
+      <!-- 1: the point -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">WELCOME · 1 / 5</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 26px 40px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; justify-content:flex-end;"><button style="border:none; background:transparent; color:#9C9284; font:600 14px/1 'Hanken Grotesk',sans-serif; padding:6px;">Skip</button></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+              <div style="position:relative; width:196px; height:196px; margin-bottom:36px;">
+                <span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid #CFDAD0;"></span>
+                <span style="position:absolute; inset:34px; border-radius:50%; border:1.5px solid #DFE6DE;"></span>
+                <span style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><img src="assets/remy-mark.png" alt="" style="height:104px; width:auto;" /></span>
+              </div>
+              <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.8px; text-transform:uppercase; color:#9C9284; margin-bottom:14px;">Meet Remy</div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:29px; line-height:1.16; letter-spacing:-0.4px; color:#23201A; margin:0 0 12px; max-width:300px;">Cook with your hands full</h1>
+              <p style="color:#6E6559; font-size:15px; line-height:1.55; margin:0; max-width:290px;">Remy is your invisible sous-chef. Talk to it out loud while you cook or shop — it reads the steps, tracks your ingredients, and never needs a tap.</p>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; gap:6px;"><span style="width:22px; height:7px; border-radius:4px; background:#23201A;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span></div>
+              <button style="padding:13px 28px; border:none; border-radius:12px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;">Next</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- 2: add a recipe -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">WELCOME · 2 / 5</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 26px 40px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; justify-content:flex-end;"><button style="border:none; background:transparent; color:#9C9284; font:600 14px/1 'Hanken Grotesk',sans-serif; padding:6px;">Skip</button></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+              <div style="display:flex; align-items:center; gap:18px; margin-bottom:40px;">
+                <div style="display:flex; flex-direction:column; gap:9px;">
+                  <span style="width:48px; height:48px; border-radius:13px; background:#FBF8F3; border:1px solid #E1D8C9; display:flex; align-items:center; justify-content:center;"><span style="width:20px; height:3px; border-radius:2px; background:#9C9284; transform:rotate(-40deg);"></span></span>
+                  <span style="width:48px; height:48px; border-radius:13px; background:#FBF8F3; border:1px solid #E1D8C9; display:flex; align-items:center; justify-content:center;"><span style="width:22px; height:17px; border-radius:4px; background:repeating-linear-gradient(135deg,#E1D8C9 0 5px,#EFE8DC 5px 10px);"></span></span>
+                  <span style="width:48px; height:48px; border-radius:13px; background:#FBF8F3; border:1px solid #E1D8C9; display:flex; align-items:center; justify-content:center;"><span style="width:15px; height:15px; border-radius:50%; border:2px solid #9C9284;"></span></span>
+                </div>
+                <span style="color:#B3A794; font-size:24px;">→</span>
+                <div style="width:124px; border-radius:15px; background:#FBF8F3; border:1px solid #E1D8C9; overflow:hidden;">
+                  <div style="height:46px; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                  <div style="padding:13px; display:flex; flex-direction:column; gap:7px;">
+                    <span style="height:9px; width:82%; border-radius:4px; background:#D2C6B4;"></span>
+                    <span style="height:6px; width:58%; border-radius:3px; background:#E1D8C9;"></span>
+                    <span style="height:6px; width:70%; border-radius:3px; background:#E1D8C9;"></span>
+                  </div>
+                </div>
+              </div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:29px; line-height:1.16; letter-spacing:-0.4px; color:#23201A; margin:0 0 12px; max-width:300px;">Bring in any recipe</h1>
+              <p style="color:#6E6559; font-size:15px; line-height:1.55; margin:0; max-width:290px;">Paste a link, snap the cookbook page, or search by name. Remy pulls out the ingredients and steps in seconds.</p>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; gap:6px;"><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:22px; height:7px; border-radius:4px; background:#23201A;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span></div>
+              <button style="padding:13px 28px; border:none; border-radius:12px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;">Next</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- 3: pick a mode -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">WELCOME · 3 / 5</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 26px 40px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; justify-content:flex-end;"><button style="border:none; background:transparent; color:#9C9284; font:600 14px/1 'Hanken Grotesk',sans-serif; padding:6px;">Skip</button></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+              <div style="display:flex; gap:14px; margin-bottom:40px;">
+                <div style="width:122px; padding:16px; border-radius:17px; background:#E8EEE7; border:1px solid #D3DED1; display:flex; flex-direction:column; gap:12px;">
+                  <span style="font:700 10px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.2px; color:#3F5748;">SHOPPING</span>
+                  <span style="display:flex; align-items:center; gap:8px;"><span style="width:15px; height:15px; border-radius:50%; background:#5C7563;"></span><span style="flex:1; height:6px; border-radius:3px; background:#CBD9C8;"></span></span>
+                  <span style="display:flex; align-items:center; gap:8px;"><span style="width:15px; height:15px; border-radius:50%; background:#5C7563;"></span><span style="flex:1; height:6px; border-radius:3px; background:#CBD9C8;"></span></span>
+                  <span style="display:flex; align-items:center; gap:8px;"><span style="width:15px; height:15px; border-radius:50%; border:2px solid #A9BCA6;"></span><span style="flex:1; height:6px; border-radius:3px; background:#CBD9C8;"></span></span>
+                </div>
+                <div style="width:122px; padding:16px; border-radius:17px; background:#F3E4DB; border:1px solid #E7CFC2; display:flex; flex-direction:column; gap:12px;">
+                  <span style="font:700 10px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.2px; color:#7C3A22;">COOKING</span>
+                  <span style="display:flex; align-items:center; gap:8px;"><span style="font-family:'Newsreader',serif; font-size:14px; color:#B65B3C; width:12px;">1</span><span style="flex:1; height:6px; border-radius:3px; background:#E7CBBB;"></span></span>
+                  <span style="display:flex; align-items:center; gap:8px;"><span style="font-family:'Newsreader',serif; font-size:14px; color:#B65B3C; width:12px;">2</span><span style="flex:1; height:6px; border-radius:3px; background:#E7CBBB;"></span></span>
+                  <span style="display:flex; align-items:center; gap:8px;"><span style="font-family:'Newsreader',serif; font-size:14px; color:#B65B3C; width:12px;">3</span><span style="flex:1; height:6px; border-radius:3px; background:#E7CBBB;"></span></span>
+                </div>
+              </div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:29px; line-height:1.16; letter-spacing:-0.4px; color:#23201A; margin:0 0 12px; max-width:300px;">Pick a mode</h1>
+              <p style="color:#6E6559; font-size:15px; line-height:1.55; margin:0; max-width:290px;">Shopping gathers your ingredients; Cooking guides you step by step. The whole app takes on that mode's calm colour.</p>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; gap:6px;"><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:22px; height:7px; border-radius:4px; background:#23201A;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span></div>
+              <button style="padding:13px 28px; border:none; border-radius:12px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;">Next</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- 4: just talk (hands-free) -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">WELCOME · 4 / 5</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 26px 40px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; justify-content:flex-end;"><button style="border:none; background:transparent; color:#9C9284; font:600 14px/1 'Hanken Grotesk',sans-serif; padding:6px;">Skip</button></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+              <div style="display:flex; flex-direction:column; gap:12px; width:250px; margin-bottom:38px;">
+                <div style="align-self:flex-start; background:#E8EEE7; border:1px solid #D3DED1; border-radius:16px 16px 16px 5px; padding:16px 18px; display:flex; align-items:flex-end; gap:5px;">
+                  <span style="width:4px; height:11px; border-radius:2px; background:#5C7563;"></span>
+                  <span style="width:4px; height:20px; border-radius:2px; background:#5C7563;"></span>
+                  <span style="width:4px; height:14px; border-radius:2px; background:#5C7563;"></span>
+                  <span style="width:4px; height:23px; border-radius:2px; background:#5C7563;"></span>
+                  <span style="width:4px; height:12px; border-radius:2px; background:#5C7563;"></span>
+                  <span style="width:4px; height:17px; border-radius:2px; background:#5C7563;"></span>
+                </div>
+                <div style="align-self:flex-end; background:#F3E4DB; border:1px solid #E7CFC2; border-radius:16px 16px 5px 16px; padding:15px 18px; display:flex; flex-direction:column; gap:7px;">
+                  <span style="height:7px; width:106px; border-radius:3px; background:#E3B9A4;"></span>
+                  <span style="height:7px; width:66px; border-radius:3px; background:#EACDBF;"></span>
+                </div>
+              </div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:29px; line-height:1.16; letter-spacing:-0.4px; color:#23201A; margin:0 0 12px; max-width:300px;">Then just talk</h1>
+              <p style="color:#6E6559; font-size:15px; line-height:1.55; margin:0; max-width:296px;">It's a conversation — completely hands-free. As you shop or cook, talk to Remy the way you would a friend in the kitchen: what you're doing, what you're swapping, what you can't find. It listens and keeps everything on track, so your hands never leave the food.</p>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; gap:6px;"><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:22px; height:7px; border-radius:4px; background:#23201A;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span></div>
+              <button style="padding:13px 28px; border:none; border-radius:12px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;">Next</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- 5: pause & resume -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">WELCOME · 5 / 5</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 26px 40px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; justify-content:flex-start;"><button style="width:38px; height:38px; border-radius:50%; border:1px solid #E7DFD1; background:#FBF8F3; color:#23201A; font-size:19px; line-height:1;">‹</button></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:22px; width:230px; margin-bottom:40px;">
+                <div style="display:flex; align-items:center; gap:4px; height:44px;"><span style="width:5px; height:16px; border-radius:3px; background:#5C7563;"></span><span style="width:5px; height:30px; border-radius:3px; background:#5C7563;"></span><span style="width:5px; height:22px; border-radius:3px; background:#5C7563;"></span><span style="width:5px; height:40px; border-radius:3px; background:#B65B3C;"></span><span style="width:5px; height:26px; border-radius:3px; background:#B65B3C;"></span><span style="width:5px; height:36px; border-radius:3px; background:#B65B3C;"></span><span style="width:5px; height:18px; border-radius:3px; background:#5C7563;"></span><span style="width:5px; height:28px; border-radius:3px; background:#5C7563;"></span><span style="width:5px; height:14px; border-radius:3px; background:#5C7563;"></span></div>
+                <div style="width:100%;">
+                  <div style="height:8px; border-radius:4px; background:#E4CDBF; overflow:hidden;"><span style="display:block; width:42%; height:100%; border-radius:4px; background:#B65B3C;"></span></div>
+                  <div style="display:flex; align-items:center; justify-content:center; gap:7px; margin-top:12px;"><span style="display:inline-flex; gap:2px;"><span style="width:2.5px; height:9px; border-radius:1px; background:#B65B3C;"></span><span style="width:2.5px; height:9px; border-radius:1px; background:#B65B3C;"></span></span><span style="font:600 12px/1 'Hanken Grotesk',sans-serif; color:#B65B3C;">Paused at step 3</span></div>
+                </div>
+              </div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:29px; line-height:1.16; letter-spacing:-0.4px; color:#23201A; margin:0 0 12px; max-width:300px;">Pause whenever</h1>
+              <p style="color:#6E6559; font-size:15px; line-height:1.55; margin:0; max-width:290px;">Step away and come back later — Remy remembers exactly where you left off, right down to the step.</p>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; gap:6px;"><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:7px; height:7px; border-radius:4px; background:#D8CDBB;"></span><span style="width:22px; height:7px; border-radius:4px; background:#23201A;"></span></div>
+              <button style="padding:13px 26px; border:none; border-radius:12px; background:#5C7563; color:#F7FAF6; font:600 15px/1 'Hanken Grotesk',sans-serif; box-shadow:0 8px 18px rgba(92,117,99,0.28);">Get started</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+
+    <!-- ============ GROUP 3 : GETTING A RECIPE ============ -->
+    <div style="margin:64px 0 22px; padding-bottom:12px; border-bottom:1px solid #C9C2B6;">
+      <div style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">3 · Getting a recipe in</div>
+      <div style="color:#6E6559; font-size:14.5px; margin-top:4px;">Landing, the extraction loading treatment, search, and the live camera capture.</div>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+
+      <!-- Landing -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">LANDING · INPUT</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:56px;">
+              <span style="display:flex; align-items:center; gap:9px;"><img src="assets/remy-mark.png" alt="Remy" style="height:36px; width:auto; display:block;" /><span style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">Remy</span></span>
+              <button style="display:flex; align-items:center; gap:8px; padding:9px 15px; border:1px solid #D8CDBB; border-radius:999px; background:#FBF8F3; color:#23201A; font:600 14px/1 'Hanken Grotesk',sans-serif; box-shadow:0 1px 3px rgba(60,50,40,0.06);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#23201A" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>My recipes<span style="display:inline-flex; min-width:19px; height:19px; padding:0 5px; align-items:center; justify-content:center; border-radius:999px; background:#5C7563; color:#fff; font:700 11px/1 'Hanken Grotesk',sans-serif;">3</span></button>
+            </div>
+            <div style="margin-bottom:34px;">
+              <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.8px; text-transform:uppercase; color:#9C9284; margin-bottom:12px;">Invisible sous-chef</div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:400; font-size:34px; line-height:1.18; letter-spacing:-0.4px; color:#23201A; margin:0;">What are we<br>making today?</h1>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <input placeholder="Paste a recipe link…" style="padding:16px 18px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+              <button style="padding:16px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 16px/1 'Hanken Grotesk',sans-serif;">Get the recipe</button>
+              <div style="display:flex; align-items:center; gap:14px; margin:6px 0; color:#B3A794; font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.5px;"><span style="flex:1; height:1px; background:#E1D8C9;"></span>OR<span style="flex:1; height:1px; background:#E1D8C9;"></span></div>
+              <div style="display:flex; gap:12px;">
+                <button style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; padding:18px 12px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 14px/1 'Hanken Grotesk',sans-serif;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#23201A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2l1.2-1.8A1 1 0 0 1 8.5 4.7h7a1 1 0 0 1 .8.5L17.5 7h2A1.5 1.5 0 0 1 21 8.5v9A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/><circle cx="12" cy="12.3" r="3.3"/></svg>Snap pages</button>
+                <button style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; padding:18px 12px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 14px/1 'Hanken Grotesk',sans-serif;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#23201A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 16.5l4.5-4 3.3 2.8 3-2.6L20 16"/></svg>Upload</button>
+              </div>
+              <button style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:500 15px/1 'Hanken Grotesk',sans-serif;">Search by name<span style="color:#B3A794;">›</span></button>
+            </div>
+            <div style="flex:1;"></div>
+            <button style="align-self:center; border:none; background:transparent; color:#8a8377; font:14px 'Hanken Grotesk',sans-serif; text-decoration:underline; text-underline-offset:3px;">Try a sample recipe</button>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Extraction loading -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">EXTRACTION · LOADING</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:64px;">
+              <span style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">Remy</span>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:44px;">
+              <div style="position:relative; width:70px; height:70px; margin-bottom:26px;">
+                <span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid #C9BBA7; animation:remyRing 1.8s ease-out infinite;"></span>
+                <span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid #C9BBA7; animation:remyRing 1.8s ease-out .6s infinite;"></span>
+                <span style="position:absolute; inset:22px; border-radius:50%; background:#5C7563;"></span>
+              </div>
+              <div style="font-family:'Newsreader',serif; font-size:23px; color:#23201A; margin-bottom:6px;">Reading the recipe…</div>
+              <div style="color:#6E6559; font-size:14.5px; line-height:1.5; max-width:260px;">Pulling out the ingredients and steps. This usually takes a few seconds.</div>
+            </div>
+            <div style="background:#FBF8F3; border:1px solid #E7DFD1; border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:20px;">
+              <div>
+                <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#B3A794; margin-bottom:12px;">Ingredients</div>
+                <div style="display:flex; flex-direction:column; gap:9px;">
+                  <div class="remy-shimmer" style="height:12px; width:80%; border-radius:6px;"></div>
+                  <div class="remy-shimmer" style="height:12px; width:65%; border-radius:6px;"></div>
+                  <div class="remy-shimmer" style="height:12px; width:72%; border-radius:6px;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#B3A794; margin-bottom:12px;">Steps</div>
+                <div style="display:flex; flex-direction:column; gap:9px;">
+                  <div class="remy-shimmer" style="height:12px; width:95%; border-radius:6px;"></div>
+                  <div class="remy-shimmer" style="height:12px; width:88%; border-radius:6px;"></div>
+                </div>
+              </div>
+            </div>
+            <div style="flex:1;"></div>
+            <button style="align-self:center; border:none; background:transparent; color:#8a8377; font:14px 'Hanken Grotesk',sans-serif; text-decoration:underline; text-underline-offset:3px;">Cancel</button>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Search -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">SEARCH BY NAME</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; gap:14px; margin-bottom:26px;">
+              <button style="width:38px; height:38px; border-radius:50%; border:1px solid #E7DFD1; background:#FBF8F3; color:#23201A; font-size:19px; line-height:1;">‹</button>
+              <span style="font-family:'Newsreader',serif; font-size:22px; color:#23201A;">Search</span>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:24px;">
+              <input value="harissa chicken" style="flex:1; padding:15px 16px; border:1px solid #E1D8C9; border-radius:12px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+              <button style="padding:0 20px; border:none; border-radius:12px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;">Go</button>
+            </div>
+            <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#9C9284; margin-bottom:12px;">6 results</div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; gap:14px; padding:12px; border:1px solid #E7DFD1; border-radius:14px; background:#FBF8F3;">
+                <div style="width:56px; height:56px; border-radius:10px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px); display:flex; align-items:center; justify-content:center; color:#B3A794; font:10px ui-monospace,monospace;">img</div>
+                <div style="flex:1; min-width:0;"><div style="font:600 15.5px/1.3 'Hanken Grotesk',sans-serif; color:#23201A;">Sheet-Pan Harissa Chicken with Charred Lemon</div><div style="color:#8a8377; font-size:13px; margin-top:3px;">45 min · serves 4</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; padding:12px; border:1px solid #E7DFD1; border-radius:14px; background:#FBF8F3;">
+                <div style="width:56px; height:56px; border-radius:10px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px); display:flex; align-items:center; justify-content:center; color:#B3A794; font:10px ui-monospace,monospace;">img</div>
+                <div style="flex:1; min-width:0;"><div style="font:600 15.5px/1.3 'Hanken Grotesk',sans-serif; color:#23201A;">Harissa Chicken Traybake</div><div style="color:#8a8377; font-size:13px; margin-top:3px;">35 min · serves 2</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; padding:12px; border:1px solid #E7DFD1; border-radius:14px; background:#FBF8F3;">
+                <div style="width:56px; height:56px; border-radius:10px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px); display:flex; align-items:center; justify-content:center; color:#B3A794; font:10px ui-monospace,monospace;">img</div>
+                <div style="flex:1; min-width:0;"><div style="font:600 15.5px/1.3 'Hanken Grotesk',sans-serif; color:#23201A;">Yogurt-Marinated Harissa Chicken Bowls</div><div style="color:#8a8377; font-size:13px; margin-top:3px;">50 min · serves 4</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; padding:12px; border:1px solid #E7DFD1; border-radius:14px; background:#FBF8F3; opacity:.55;">
+                <div style="width:56px; height:56px; border-radius:10px; flex-shrink:0; background:#EDE6DA; display:flex; align-items:center; justify-content:center; color:#5C7563; font:12px 'Hanken Grotesk',sans-serif;">loading…</div>
+                <div style="flex:1; min-width:0;"><div style="font:600 15.5px/1.3 'Hanken Grotesk',sans-serif; color:#23201A;">Grilled Harissa Chicken Thighs</div><div style="color:#8a8377; font-size:13px; margin-top:3px;">Fetching details…</div></div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Camera -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">CAMERA · MULTI-SHOT</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; position:relative; background:#141210; font-family:'Hanken Grotesk',system-ui,sans-serif; overflow:hidden;">
+            <div style="position:absolute; inset:0; background:repeating-linear-gradient(135deg,#242019 0 16px,#1b1813 16px 32px); display:flex; align-items:center; justify-content:center;">
+              <span style="color:#4a443b; font:12px ui-monospace,monospace;">live camera</span>
+            </div>
+            <!-- top scrim -->
+            <div style="position:absolute; top:0; left:0; right:0; height:150px; background:linear-gradient(180deg,rgba(0,0,0,0.55),transparent);"></div>
+            <div style="position:absolute; top:70px; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:0 22px;">
+              <button style="width:40px; height:40px; border-radius:50%; border:none; background:rgba(255,255,255,0.16); backdrop-filter:blur(8px); color:#fff; font-size:19px; line-height:1;">×</button>
+              <span style="padding:8px 16px; border-radius:999px; background:rgba(0,0,0,0.4); backdrop-filter:blur(8px); color:#fff; font:600 13px/1 'Hanken Grotesk',sans-serif; letter-spacing:.3px;">Snap each page</span>
+              <span style="width:40px;"></span>
+            </div>
+            <!-- corner guides -->
+            <div style="position:absolute; top:150px; left:40px; right:40px; bottom:250px; border-radius:14px;">
+              <span style="position:absolute; top:0; left:0; width:26px; height:26px; border-top:2px solid rgba(255,255,255,.7); border-left:2px solid rgba(255,255,255,.7); border-radius:8px 0 0 0;"></span>
+              <span style="position:absolute; top:0; right:0; width:26px; height:26px; border-top:2px solid rgba(255,255,255,.7); border-right:2px solid rgba(255,255,255,.7); border-radius:0 8px 0 0;"></span>
+              <span style="position:absolute; bottom:0; left:0; width:26px; height:26px; border-bottom:2px solid rgba(255,255,255,.7); border-left:2px solid rgba(255,255,255,.7); border-radius:0 0 0 8px;"></span>
+              <span style="position:absolute; bottom:0; right:0; width:26px; height:26px; border-bottom:2px solid rgba(255,255,255,.7); border-right:2px solid rgba(255,255,255,.7); border-radius:0 0 8px 0;"></span>
+            </div>
+            <!-- bottom scrim + controls -->
+            <div style="position:absolute; bottom:0; left:0; right:0; padding:0 22px 44px; background:linear-gradient(0deg,rgba(0,0,0,0.7),transparent);">
+              <div style="display:flex; gap:9px; padding:20px 0; overflow-x:auto;">
+                <div style="position:relative; width:54px; height:54px; border-radius:10px; flex-shrink:0; overflow:hidden; border:2px solid #fff; background:#333;"><span style="position:absolute; top:2px; right:2px; width:18px; height:18px; border-radius:50%; background:rgba(0,0,0,.7); color:#fff; font-size:12px; line-height:18px; text-align:center;">×</span></div>
+                <div style="position:relative; width:54px; height:54px; border-radius:10px; flex-shrink:0; overflow:hidden; border:2px solid #fff; background:#3a352c;"><span style="position:absolute; top:2px; right:2px; width:18px; height:18px; border-radius:50%; background:rgba(0,0,0,.7); color:#fff; font-size:12px; line-height:18px; text-align:center;">×</span></div>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="width:64px; color:rgba(255,255,255,.7); font:600 13px/1 'Hanken Grotesk',sans-serif;">2 / 6</span>
+                <button style="width:72px; height:72px; border-radius:50%; border:4px solid #fff; background:transparent; padding:4px;"><span style="display:block; width:100%; height:100%; border-radius:50%; background:#fff;"></span></button>
+                <div style="width:64px; display:flex; justify-content:flex-end;"><button style="width:50px; height:50px; border-radius:50%; border:none; background:#B65B3C; color:#FBEFE9; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 6px 16px rgba(124,58,34,0.4);">✓</button></div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+
+    <!-- ============ GROUP 2 : THE FORK + RESUME ============ -->
+    <div style="margin:64px 0 22px; padding-bottom:12px; border-bottom:1px solid #C9C2B6;">
+      <div style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">4 · The fork &amp; coming back</div>
+      <div style="color:#6E6559; font-size:14.5px; margin-top:4px;">Picking a mode tints the whole screen (1b). Resume is a warm welcome-back, not an error.</div>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+
+      <!-- Confirm: Shopping -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#5C7563; margin-bottom:12px;">CONFIRM · SHOPPING SELECTED</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:radial-gradient(125% 65% at 50% -12%, #F2F6F0 0%, rgba(242,246,240,0) 58%), linear-gradient(180deg, #E9EFE7 0%, #DFE9DD 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:78px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:26px;">
+              <button style="width:38px; height:38px; border-radius:50%; border:1px solid #CDD6CB; background:rgba(255,255,255,0.55); color:#2F4436; font-size:19px; line-height:1;">‹</button>
+              <span style="font-family:'Newsreader',serif; font-size:22px; color:#2F4436;">Remy</span>
+              <span style="width:38px;"></span>
+            </div>
+            <div style="display:flex; padding:4px; background:rgba(47,68,54,0.09); border-radius:14px; margin-bottom:30px;">
+              <button style="flex:1; padding:12px; border:none; border-radius:11px; background:#5C7563; color:#F4F8F2; font:600 15px/1 'Hanken Grotesk',sans-serif; box-shadow:0 4px 12px rgba(47,68,54,0.22);">Shopping</button>
+              <button style="flex:1; padding:12px; border:none; border-radius:11px; background:transparent; color:#5E7060; font:600 15px/1 'Hanken Grotesk',sans-serif;">Cooking</button>
+            </div>
+            <div style="text-align:center; margin-bottom:26px;">
+              <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.6px; text-transform:uppercase; color:#7C9080; margin-bottom:12px;">Shopping mode</div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:30px; line-height:1.14; letter-spacing:-0.4px; color:#26302A; margin:0 0 8px;">Garlic Butter Pasta</h1>
+              <div style="color:#5E7060; font-size:15px;">6 ingredients&nbsp; ·&nbsp; 6 steps</div>
+            </div>
+            <div style="border-left:3px solid #5C7563; padding:2px 0 2px 18px; margin:2px 0 20px;">
+              <div style="font-family:'Newsreader',serif; font-size:22px; line-height:1.32; margin-bottom:8px; color:#26302A;">“Let's gather your six ingredients.”</div>
+              <div style="font-size:14px; line-height:1.55; color:#4d5f52;">Tell me what you already have and what you're looking at — I'll track down the rest, hands-free.</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.55); border:1px solid rgba(47,68,54,0.1); border-radius:14px; padding:16px 18px; font-size:14px; color:#4d5f52; line-height:1.5;">First on the list: <span style="color:#26302A; font-weight:600;">1 lb spaghetti.</span></div>
+            <div style="flex:1;"></div>
+            <button style="width:100%; padding:17px; border:none; border-radius:14px; background:#3F5748; color:#EEF4EC; font:600 17px/1 'Hanken Grotesk',sans-serif; box-shadow:0 8px 20px rgba(47,68,54,0.26); margin-bottom:12px;">Start shopping</button>
+            <div style="display:flex; align-items:center; justify-content:center; gap:20px;">
+              <button style="border:none; background:transparent; color:#5E7060; font:600 14px 'Hanken Grotesk',sans-serif;">Save recipe</button>
+              <span style="width:1px; height:14px; background:rgba(47,68,54,0.2);"></span>
+              <button style="border:none; background:transparent; color:#5E7060; font:14px 'Hanken Grotesk',sans-serif;">Try another</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Confirm: Cooking -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B65B3C; margin-bottom:12px;">CONFIRM · COOKING SELECTED</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:radial-gradient(125% 65% at 50% -12%, #F9EDE5 0%, rgba(249,237,229,0) 58%), linear-gradient(180deg, #F4E3D8 0%, #EDD6C7 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:78px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:26px;">
+              <button style="width:38px; height:38px; border-radius:50%; border:1px solid #E4CDBF; background:rgba(255,255,255,0.55); color:#7C3A22; font-size:19px; line-height:1;">‹</button>
+              <span style="font-family:'Newsreader',serif; font-size:22px; color:#7C3A22;">Remy</span>
+              <span style="width:38px;"></span>
+            </div>
+            <div style="display:flex; padding:4px; background:rgba(124,58,34,0.1); border-radius:14px; margin-bottom:30px;">
+              <button style="flex:1; padding:12px; border:none; border-radius:11px; background:transparent; color:#8a6250; font:600 15px/1 'Hanken Grotesk',sans-serif;">Shopping</button>
+              <button style="flex:1; padding:12px; border:none; border-radius:11px; background:#B65B3C; color:#FBEFE9; font:600 15px/1 'Hanken Grotesk',sans-serif; box-shadow:0 4px 12px rgba(124,58,34,0.24);">Cooking</button>
+            </div>
+            <div style="text-align:center; margin-bottom:26px;">
+              <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.6px; text-transform:uppercase; color:#B07257; margin-bottom:12px;">Cooking mode</div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:30px; line-height:1.14; letter-spacing:-0.4px; color:#3A2317; margin:0 0 8px;">Garlic Butter Pasta</h1>
+              <div style="color:#8a6250; font-size:15px;">6 ingredients&nbsp; ·&nbsp; 6 steps</div>
+            </div>
+            <div style="border-left:3px solid #B65B3C; padding:2px 0 2px 18px; margin:2px 0 20px;">
+              <div style="font-family:'Newsreader',serif; font-size:22px; line-height:1.32; margin-bottom:8px; color:#3A2317;">“Let's cook. I'll read you each step.”</div>
+              <div style="font-size:14px; line-height:1.55; color:#7a5241;">I'll walk you through all six steps, wait for you, and adjust timings out loud — no need to touch the screen.</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.55); border:1px solid rgba(124,58,34,0.12); border-radius:14px; padding:16px 18px; font-size:14px; color:#7a5241; line-height:1.5;">First up: <span style="color:#3A2317; font-weight:600;">bring a large pot of salted water to a boil.</span></div>
+            <div style="flex:1;"></div>
+            <button style="width:100%; padding:17px; border:none; border-radius:14px; background:#7C3A22; color:#FBEFE9; font:600 17px/1 'Hanken Grotesk',sans-serif; box-shadow:0 8px 20px rgba(124,58,34,0.28); margin-bottom:12px;">Start cooking</button>
+            <div style="display:flex; align-items:center; justify-content:center; gap:20px;">
+              <button style="border:none; background:transparent; color:#8a6250; font:600 14px 'Hanken Grotesk',sans-serif;">Save recipe</button>
+              <span style="width:1px; height:14px; background:rgba(124,58,34,0.2);"></span>
+              <button style="border:none; background:transparent; color:#8a6250; font:14px 'Hanken Grotesk',sans-serif;">Try another</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Resume -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B65B3C; margin-bottom:12px;">RESUME · WELCOME BACK</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:radial-gradient(125% 65% at 50% -12%, #F9EDE5 0%, rgba(249,237,229,0) 58%), linear-gradient(180deg, #F4E3D8 0%, #EDD6C7 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:78px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:40px;">
+              <button style="width:38px; height:38px; border-radius:50%; border:1px solid #E4CDBF; background:rgba(255,255,255,0.55); color:#7C3A22; font-size:19px; line-height:1;">‹</button>
+              <span style="font-family:'Newsreader',serif; font-size:22px; color:#7C3A22;">Remy</span>
+              <span style="width:38px;"></span>
+            </div>
+            <div style="text-align:center; margin-bottom:24px;">
+              <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.6px; text-transform:uppercase; color:#B07257; margin-bottom:12px;">Welcome back</div>
+              <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:29px; line-height:1.16; letter-spacing:-0.4px; color:#3A2317; margin:0 0 8px;">Garlic Butter Pasta</h1>
+              <div style="color:#8a6250; font-size:15px;">6 ingredients&nbsp; ·&nbsp; 6 steps</div>
+            </div>
+            <div style="background:#FBF3EE; border:1px solid rgba(124,58,34,0.14); border-radius:18px; padding:24px; box-shadow:0 10px 26px rgba(124,58,34,0.12);">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:#B65B3C;"></span>
+                <span style="font:600 12px/1 'Hanken Grotesk',sans-serif; letter-spacing:.4px; color:#B65B3C;">PAUSED IN COOKING</span>
+              </div>
+              <div style="font-family:'Newsreader',serif; font-size:22px; line-height:1.3; color:#3A2317; margin-bottom:6px;">You left off at step 3.</div>
+              <div style="font-size:14.5px; line-height:1.55; color:#7a5241; margin-bottom:20px;">"Add the minced garlic and red pepper flakes, and cook until fragrant, about 1 minute." Everything's saved — pick up right where you were.</div>
+              <div style="display:flex; gap:6px; margin-bottom:4px;">
+                <span style="flex:1; height:6px; border-radius:3px; background:#B65B3C;"></span>
+                <span style="flex:1; height:6px; border-radius:3px; background:#B65B3C;"></span>
+                <span style="flex:1; height:6px; border-radius:3px; background:#B65B3C;"></span>
+                <span style="flex:1; height:6px; border-radius:3px; background:#E4CDBF;"></span>
+                <span style="flex:1; height:6px; border-radius:3px; background:#E4CDBF;"></span>
+                <span style="flex:1; height:6px; border-radius:3px; background:#E4CDBF;"></span>
+              </div>
+            </div>
+            <div style="flex:1;"></div>
+            <button style="width:100%; padding:17px; border:none; border-radius:14px; background:#7C3A22; color:#FBEFE9; font:600 17px/1 'Hanken Grotesk',sans-serif; box-shadow:0 8px 20px rgba(124,58,34,0.28); margin-bottom:12px;">Resume at step 3</button>
+            <button style="width:100%; padding:15px; border:1px solid rgba(124,58,34,0.25); border-radius:14px; background:transparent; color:#7C3A22; font:600 15px/1 'Hanken Grotesk',sans-serif;">Start over from the top</button>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+
+    <!-- ============ GROUP 3 : THE VOICE SESSION ============ -->
+    <div style="margin:64px 0 22px; padding-bottom:12px; border-bottom:1px solid #C9C2B6;">
+      <div style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">5 · The live voice session</div>
+      <div style="color:#6E6559; font-size:14.5px; margin-top:4px;">Glanceable-first: the current step (Cooking) or the gathered list (Shopping) is the hero. Transcript &amp; tool calls sit quietly beneath. Connecting, wrap-up and recovery states carry the mode's colour through.</div>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+
+      <!-- Cooking session -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B65B3C; margin-bottom:12px;">SESSION · COOKING (SPEAKING)</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:radial-gradient(125% 65% at 50% -12%, #F9EDE5 0%, rgba(249,237,229,0) 58%), linear-gradient(180deg, #F4E3D8 0%, #EDD6C7 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:74px 20px 34px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+              <button style="width:36px; height:36px; border-radius:50%; border:1px solid #E4CDBF; background:rgba(255,255,255,0.55); color:#7C3A22; font-size:18px; line-height:1; flex-shrink:0;">‹</button>
+              <div style="flex:1; min-width:0;"><div style="font-family:'Newsreader',serif; font-size:18px; line-height:1; color:#3A2317; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Garlic Butter Pasta</div></div>
+              <button style="padding:7px 12px; border:1px solid rgba(124,58,34,0.2); border-radius:999px; background:transparent; color:#8a6250; font:600 12px/1 'Hanken Grotesk',sans-serif; flex-shrink:0;">Save</button>
+            </div>
+
+            <!-- hero current step -->
+            <div style="background:#FBF3EE; border:1px solid rgba(124,58,34,0.12); border-radius:20px; padding:22px; box-shadow:0 10px 26px rgba(124,58,34,0.1); margin-bottom:18px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                <span style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; color:#B65B3C; white-space:nowrap;">STEP 3 OF 6</span>
+                <div style="display:flex; gap:4px;">
+                  <span style="width:16px; height:5px; border-radius:3px; background:#B65B3C;"></span>
+                  <span style="width:16px; height:5px; border-radius:3px; background:#B65B3C;"></span>
+                  <span style="width:16px; height:5px; border-radius:3px; background:#B65B3C;"></span>
+                  <span style="width:16px; height:5px; border-radius:3px; background:#E4CDBF;"></span>
+                  <span style="width:16px; height:5px; border-radius:3px; background:#E4CDBF;"></span>
+                  <span style="width:16px; height:5px; border-radius:3px; background:#E4CDBF;"></span>
+                </div>
+              </div>
+              <div style="font-family:'Newsreader',serif; font-size:25px; line-height:1.32; color:#3A2317;">Add the minced garlic and red pepper flakes, and cook until fragrant — about a minute.</div>
+            </div>
+
+            <!-- conversation -->
+            <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; gap:9px;">
+              <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#B07257; margin-bottom:2px;">Conversation</div>
+              <div style="align-self:flex-start; max-width:88%; background:#FBF3EE; border-radius:14px 14px 14px 4px; padding:11px 14px; font-size:14.5px; line-height:1.4; color:#3A2317;">Water's boiling and the butter's melted. Ready for the garlic?</div>
+              <div style="align-self:flex-end; max-width:88%; background:#B65B3C; color:#FBEFE9; border-radius:14px 14px 4px 14px; padding:11px 14px; font-size:14.5px; line-height:1.4;">yep, going in now</div>
+              <div style="align-self:flex-start; display:inline-flex; align-items:center; gap:7px; padding:6px 12px; background:rgba(124,58,34,0.08); border-radius:999px; font:italic 500 12.5px/1.3 'Hanken Grotesk',sans-serif; color:#9c6a50;"><span style="width:5px; height:5px; border-radius:50%; background:#B65B3C;"></span>Moved on to step 3</div>
+            </div>
+
+            <!-- listening bar -->
+            <div style="display:flex; align-items:center; gap:14px; margin-top:16px; padding:14px 18px; background:#7C3A22; border-radius:16px; box-shadow:0 10px 24px rgba(124,58,34,0.28);">
+              <div style="display:flex; align-items:flex-end; gap:3px; height:22px;">
+                <span style="width:3.5px; height:22px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out infinite;"></span>
+                <span style="width:3.5px; height:22px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out .15s infinite;"></span>
+                <span style="width:3.5px; height:22px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out .3s infinite;"></span>
+                <span style="width:3.5px; height:22px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out .45s infinite;"></span>
+              </div>
+              <span style="flex:1; color:#FBEFE9; font:600 14px/1 'Hanken Grotesk',sans-serif;">Remy is speaking…</span>
+              <button style="padding:8px 14px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:transparent; color:#FBEFE9; font:600 13px/1 'Hanken Grotesk',sans-serif;">Wrap up</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Shopping session -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#5C7563; margin-bottom:12px;">SESSION · SHOPPING (LISTENING)</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:radial-gradient(125% 65% at 50% -12%, #F2F6F0 0%, rgba(242,246,240,0) 58%), linear-gradient(180deg, #E9EFE7 0%, #DFE9DD 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:74px 20px 34px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+              <button style="width:36px; height:36px; border-radius:50%; border:1px solid #CDD6CB; background:rgba(255,255,255,0.55); color:#2F4436; font-size:18px; line-height:1; flex-shrink:0;">‹</button>
+              <div style="flex:1; min-width:0;"><div style="font-family:'Newsreader',serif; font-size:18px; line-height:1; color:#26302A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Garlic Butter Pasta</div></div>
+              <button style="padding:7px 12px; border:1px solid rgba(47,68,54,0.2); border-radius:999px; background:transparent; color:#5E7060; font:600 12px/1 'Hanken Grotesk',sans-serif; flex-shrink:0;">Save</button>
+            </div>
+
+            <!-- hero progress -->
+            <div style="background:#F1F5F0; border:1px solid rgba(47,68,54,0.1); border-radius:20px; padding:20px 22px; box-shadow:0 10px 26px rgba(47,68,54,0.08); margin-bottom:16px;">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px;">
+                <span style="font-family:'Newsreader',serif; font-size:26px; color:#26302A;">4 <span style="font-size:17px; color:#7C9080;">of 6 sorted</span></span>
+                <span style="font:600 12px/1 'Hanken Grotesk',sans-serif; color:#5C7563;">2 to go</span>
+              </div>
+              <div style="height:8px; border-radius:4px; background:#DCE4DA; overflow:hidden;"><span style="display:block; width:66%; height:100%; border-radius:4px; background:#5C7563;"></span></div>
+            </div>
+
+            <!-- checklist -->
+            <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; gap:8px;">
+              <!-- have -->
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:#F1F5F0; border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; background:#5C7563; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0;">✓</span><span style="flex:1; font-size:15px; color:#26302A;">Spaghetti</span><span style="font-size:13px; color:#7C9080;">1 lb</span></div>
+              <!-- not enough -->
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:#FBF6EC; border:1px solid #E8DCC4; border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; border:2px solid #C9A24B; color:#B4862F; display:flex; align-items:center; justify-content:center; font:700 12px/1 'Hanken Grotesk',sans-serif; flex-shrink:0;">!</span><span style="flex:1; min-width:0;"><span style="font-size:15px; color:#26302A;">Butter</span><span style="display:block; font-size:12.5px; color:#B4862F;">Only 2 of 4 tbsp — grab more</span></span><span style="font-size:13px; color:#8a8377;">4 tbsp</span></div>
+              <!-- swapped -->
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:#EEF2EC; border:1px solid #D7E1D4; border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; background:#5C7563; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0;">⇄</span><span style="flex:1; min-width:0;"><span style="font-size:15px;"><span style="text-decoration:line-through; color:#9aa398;">Parmesan</span> <span style="color:#B3A794;">→</span> <span style="color:#26302A; font-weight:700;">Pecorino</span></span><span style="display:block; font-size:12.5px; color:#5C7563;">Swapped</span></span><span style="font-size:13px; color:#8a8377;">1 cup</span></div>
+              <!-- missing / skipped -->
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:rgba(255,255,255,0.35); border:1px solid rgba(47,68,54,0.07); border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; border:2px solid #CDBFB0; color:#A89A88; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;">✕</span><span style="flex:1; min-width:0;"><span style="font-size:15px; text-decoration:line-through; color:#9C9284;">Garlic</span><span style="display:block; font-size:12.5px; color:#A89A88;">Couldn't find — skipped</span></span><button style="border:none; background:transparent; color:#5C7563; font:600 13px/1 'Hanken Grotesk',sans-serif; flex-shrink:0;">Undo</button></div>
+              <!-- pending with skip -->
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:rgba(255,255,255,0.4); border:1px solid rgba(47,68,54,0.08); border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; border:2px solid #B8C2B5; flex-shrink:0;"></span><span style="flex:1; font-size:15px; color:#4d5f52;">Red pepper flakes</span><span style="font-size:13px; color:#8a8377;">1 tsp</span><button style="border:1px solid #C9D0C6; background:transparent; color:#7C9080; border-radius:999px; padding:5px 12px; font:600 12px/1 'Hanken Grotesk',sans-serif; flex-shrink:0;">Skip</button></div>
+              <!-- pending -->
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:rgba(255,255,255,0.4); border:1px solid rgba(47,68,54,0.08); border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; border:2px solid #B8C2B5; flex-shrink:0;"></span><span style="flex:1; font-size:15px; color:#4d5f52;">Parsley</span><span style="font-size:13px; color:#8a8377;">2 tbsp</span></div>
+            </div>
+
+            <!-- listening bar -->
+            <div style="display:flex; align-items:center; gap:14px; margin-top:16px; padding:14px 18px; background:#3F5748; border-radius:16px; box-shadow:0 10px 24px rgba(47,68,54,0.26);">
+              <span style="position:relative; width:12px; height:12px; flex-shrink:0;"><span style="position:absolute; inset:0; border-radius:50%; background:#A9C0AC; animation:remyPulse 1.4s ease-in-out infinite;"></span></span>
+              <span style="flex:1; color:#EEF4EC; font:600 14px/1 'Hanken Grotesk',sans-serif;">Listening…</span>
+              <button style="padding:8px 14px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:transparent; color:#EEF4EC; font:600 13px/1 'Hanken Grotesk',sans-serif;">Wrap up</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Connecting -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B65B3C; margin-bottom:12px;">SESSION · CONNECTING</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:radial-gradient(125% 65% at 50% -12%, #F9EDE5 0%, rgba(249,237,229,0) 58%), linear-gradient(180deg, #F4E3D8 0%, #EDD6C7 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:74px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+              <button style="width:36px; height:36px; border-radius:50%; border:1px solid #E4CDBF; background:rgba(255,255,255,0.55); color:#7C3A22; font-size:18px; line-height:1;">‹</button>
+              <div style="font-family:'Newsreader',serif; font-size:18px; color:#3A2317;">Garlic Butter Pasta</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-bottom:60px;">
+              <div style="position:relative; width:90px; height:90px; margin-bottom:30px;">
+                <span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid #D9AE97; animation:remyRing 1.8s ease-out infinite;"></span>
+                <span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid #D9AE97; animation:remyRing 1.8s ease-out .6s infinite;"></span>
+                <span style="position:absolute; inset:30px; border-radius:50%; background:#B65B3C; display:flex; align-items:center; justify-content:center; gap:3px;"><span style="width:3px; height:10px; border-radius:2px; background:#FBEFE9; transform-origin:center; animation:remyBar .9s ease-in-out infinite;"></span><span style="width:3px; height:17px; border-radius:2px; background:#FBEFE9; transform-origin:center; animation:remyBar .9s ease-in-out .2s infinite;"></span><span style="width:3px; height:10px; border-radius:2px; background:#FBEFE9; transform-origin:center; animation:remyBar .9s ease-in-out .4s infinite;"></span></span>
+              </div>
+              <div style="font-family:'Newsreader',serif; font-size:24px; color:#3A2317; margin-bottom:8px;">Waking up Remy…</div>
+              <div style="color:#8a6250; font-size:14.5px; line-height:1.55; max-width:250px;">Connecting your microphone. Allow access if your browser asks — then just start talking.</div>
+            </div>
+            <button style="align-self:center; border:none; background:transparent; color:#a07a68; font:14px 'Hanken Grotesk',sans-serif; text-decoration:underline; text-underline-offset:3px;">Cancel</button>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Wrap up -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B65B3C; margin-bottom:12px;">SESSION · WRAP-UP SHEET</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; position:relative; background:radial-gradient(125% 65% at 50% -12%, #F9EDE5 0%, rgba(249,237,229,0) 58%), linear-gradient(180deg, #F4E3D8 0%, #EDD6C7 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <!-- dimmed session behind -->
+            <div style="position:absolute; inset:0; padding:74px 20px 0; opacity:.5;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;"><span style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.55);"></span><span style="font-family:'Newsreader',serif; font-size:18px; color:#3A2317;">Garlic Butter Pasta</span></div>
+              <div style="background:#FBF3EE; border-radius:20px; padding:22px; margin-bottom:18px;"><div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; color:#B65B3C; margin-bottom:12px;">STEP 3 OF 6</div><div style="font-family:'Newsreader',serif; font-size:25px; line-height:1.32; color:#3A2317;">Add the minced garlic and red pepper flakes…</div></div>
+            </div>
+            <div style="position:absolute; inset:0; background:rgba(58,35,23,0.28);"></div>
+            <!-- sheet -->
+            <div style="position:absolute; left:0; right:0; bottom:0; background:#FBF6F1; border-radius:26px 26px 0 0; padding:14px 24px 40px; box-shadow:0 -12px 34px rgba(58,35,23,0.2);">
+              <div style="width:40px; height:5px; border-radius:3px; background:#E0D2C6; margin:0 auto 20px;"></div>
+              <div style="font-family:'Newsreader',serif; font-size:24px; color:#3A2317; margin-bottom:4px;">Wrap up?</div>
+              <div style="color:#8a6250; font-size:14px; margin-bottom:22px;">You're on step 3 of 6. Nothing's lost either way.</div>
+              <button style="width:100%; display:flex; align-items:center; gap:14px; padding:18px; border:1.5px solid #B65B3C; border-radius:15px; background:#FBEEE7; margin-bottom:11px; text-align:left;">
+                <span style="width:40px; height:40px; border-radius:50%; background:#B65B3C; color:#FBEFE9; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0;">⏸</span>
+                <span style="flex:1;"><span style="display:block; font:700 15.5px/1.2 'Hanken Grotesk',sans-serif; color:#3A2317;">Pause &amp; resume later</span><span style="display:block; font-size:13px; color:#8a6250; margin-top:2px;">I'll remember you're at step 3</span></span>
+              </button>
+              <button style="width:100%; display:flex; align-items:center; gap:14px; padding:16px 18px; border:1px solid #E7DFD1; border-radius:15px; background:#FBF8F3; margin-bottom:11px; text-align:left;">
+                <span style="width:40px; height:40px; border-radius:50%; background:#EDE6DA; color:#5C7563; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">♥</span>
+                <span style="flex:1;"><span style="display:block; font:600 15.5px/1.2 'Hanken Grotesk',sans-serif; color:#23201A;">Save recipe &amp; end</span><span style="display:block; font-size:13px; color:#8a8377; margin-top:2px;">Keep it in your library</span></span>
+              </button>
+              <button style="width:100%; display:flex; align-items:center; gap:14px; padding:16px 18px; border:1px solid #E7DFD1; border-radius:15px; background:#FBF8F3; margin-bottom:18px; text-align:left;">
+                <span style="width:40px; height:40px; border-radius:50%; background:#EDE6DA; color:#23201A; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">✓</span>
+                <span style="flex:1;"><span style="display:block; font:600 15.5px/1.2 'Hanken Grotesk',sans-serif; color:#23201A;">Finish — all done</span><span style="display:block; font-size:13px; color:#8a8377; margin-top:2px;">Clear this session</span></span>
+              </button>
+              <button style="width:100%; border:none; background:transparent; color:#8a6250; font:600 14px/1 'Hanken Grotesk',sans-serif; padding:6px;">Keep going</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- Error / recovery -->
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B0503C; margin-bottom:12px;">SESSION · RECOVERY</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:74px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+              <button style="width:36px; height:36px; border-radius:50%; border:1px solid #E7DFD1; background:#FBF8F3; color:#23201A; font-size:18px; line-height:1;">‹</button>
+              <div style="font-family:'Newsreader',serif; font-size:18px; color:#23201A;">Garlic Butter Pasta</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-bottom:40px;">
+              <div style="width:64px; height:64px; border-radius:50%; background:#F3E1DB; display:flex; align-items:center; justify-content:center; color:#B0503C; font-size:26px; margin-bottom:24px;">!</div>
+              <div style="font-family:'Newsreader',serif; font-size:24px; color:#23201A; margin-bottom:10px;">Couldn't reach Remy</div>
+              <div style="color:#6E6559; font-size:14.5px; line-height:1.55; max-width:270px;">Your microphone needs permission. Allow access in your browser settings, then try again.</div>
+            </div>
+            <button style="width:100%; padding:17px; border:none; border-radius:14px; background:#B65B3C; color:#FBEFE9; font:600 16px/1 'Hanken Grotesk',sans-serif; box-shadow:0 8px 20px rgba(124,58,34,0.24); margin-bottom:11px;">Try again</button>
+            <button style="width:100%; padding:15px; border:1px solid #E1D8C9; border-radius:14px; background:#FBF8F3; color:#23201A; font:600 15px/1 'Hanken Grotesk',sans-serif;">Back to recipe</button>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+
+    <!-- ============ GROUP 4 : LIBRARY ============ -->
+    <div style="margin:64px 0 22px; padding-bottom:12px; border-bottom:1px solid #C9C2B6;">
+      <div style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">6 · Saved recipes</div>
+      <div style="color:#6E6559; font-size:14.5px; margin-top:4px;">Mode-agnostic, so it stays on paper. Paused recipes carry a quiet chip in the mode's colour.</div>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+
+      <div style="width:402px;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">LIBRARY</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="min-height:874px; box-sizing:border-box; background:#F4EFE7; padding:78px 24px 44px; display:flex; flex-direction:column; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; gap:14px; margin-bottom:8px;">
+              <button style="width:38px; height:38px; border-radius:50%; border:1px solid #E7DFD1; background:#FBF8F3; color:#23201A; font-size:19px; line-height:1;">‹</button>
+              <span style="font-family:'Newsreader',serif; font-size:22px; color:#23201A;">Saved recipes</span>
+            </div>
+            <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#9C9284; margin:14px 0 14px 52px;">4 recipes</div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              <div style="display:flex; align-items:center; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                <div style="width:52px; height:52px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.2;">Garlic Butter Pasta</div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-top:5px;"><span style="font-size:13px; color:#8a8377;">6 ingredients · 6 steps</span><span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; background:#F3E1DB; color:#B0503C; font:600 11px/1 'Hanken Grotesk',sans-serif;"><span style="display:inline-flex; gap:2px;"><span style="width:2px; height:8px; border-radius:1px; background:#B65B3C;"></span><span style="width:2px; height:8px; border-radius:1px; background:#B65B3C;"></span></span>Step 3</span></div>
+                </div>
+                <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px; flex-shrink:0;">×</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                <div style="width:52px; height:52px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.24;">Sheet-Pan Harissa Chicken with Charred Lemon &amp; Herbed Yogurt</div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-top:5px;"><span style="font-size:13px; color:#8a8377;">14 ingredients · 9 steps</span><span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; background:#E8EEE7; color:#3F5748; font:600 11px/1 'Hanken Grotesk',sans-serif;"><span style="display:inline-flex; gap:2px;"><span style="width:2px; height:8px; border-radius:1px; background:#5C7563;"></span><span style="width:2px; height:8px; border-radius:1px; background:#5C7563;"></span></span>Shopping</span></div>
+                </div>
+                <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px; flex-shrink:0;">×</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                <div style="width:52px; height:52px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.2;">Miso Butter Roast Chicken</div>
+                  <div style="font-size:13px; color:#8a8377; margin-top:5px;">9 ingredients · 7 steps</div>
+                </div>
+                <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px; flex-shrink:0;">×</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                <div style="width:52px; height:52px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.2;">Weeknight Dal Tadka</div>
+                  <div style="font-size:13px; color:#8a8377; margin-top:5px;">11 ingredients · 5 steps</div>
+                </div>
+                <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px; flex-shrink:0;">×</button>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+
+    <!-- ============ GROUP 6 : DESKTOP / WEB APP ============ -->
+    <div style="margin:64px 0 22px; padding-bottom:12px; border-bottom:1px solid #C9C2B6;">
+      <div style="font-family:'Newsreader',serif; font-size:26px; color:#23201A;">7 · On the desktop web app</div>
+      <div style="color:#6E6559; font-size:14.5px; margin-top:4px;">Mobile stays the priority. On wider screens the content settles into a comfortable centred column; the mode tint covers the whole viewport (never ending at an edge), and the Cooking session opens into a calm two-pane — current step beside the running transcript.</div>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+      <div style="width:1180px; max-width:100%;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B65B3C; margin-bottom:12px;">DESKTOP · COOKING SESSION</div>
+        <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="1180" height="760" url="remy.kitchen/cook" hint-size="1180px,760px">
+          <div style="min-height:760px; box-sizing:border-box; background:radial-gradient(90% 55% at 50% -8%, #F9EDE5 0%, rgba(249,237,229,0) 60%), linear-gradient(180deg, #F4E3D8 0%, #EDD6C7 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:34px 44px; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="max-width:1040px; margin:0 auto;">
+              <!-- top bar -->
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
+                <div style="display:flex; align-items:center; gap:14px;">
+                  <button style="width:40px; height:40px; border-radius:50%; border:1px solid #E4CDBF; background:rgba(255,255,255,0.55); color:#7C3A22; font-size:20px; line-height:1;">‹</button>
+                  <span style="display:flex; align-items:center; gap:10px;"><img src="assets/remy-mark.png" alt="Remy" style="height:32px; width:auto;" /><span style="font-family:'Newsreader',serif; font-size:24px; color:#7C3A22;">Remy</span></span>
+                </div>
+                <div style="display:flex; align-items:center; gap:16px;">
+                  <span style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#B07257;">Cooking · Garlic Butter Pasta</span>
+                  <button style="padding:9px 16px; border:1px solid rgba(124,58,34,0.2); border-radius:999px; background:transparent; color:#8a6250; font:600 13px/1 'Hanken Grotesk',sans-serif;">Save recipe</button>
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1.15fr 0.85fr; gap:28px; align-items:start;">
+                <!-- left: current step + live bar -->
+                <div style="display:flex; flex-direction:column; gap:18px;">
+                  <div style="background:#FBF3EE; border:1px solid rgba(124,58,34,0.12); border-radius:22px; padding:34px; box-shadow:0 14px 34px rgba(124,58,34,0.1);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+                      <span style="font:600 12px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.6px; color:#B65B3C; white-space:nowrap;">STEP 3 OF 6</span>
+                      <div style="display:flex; gap:5px;">
+                        <span style="width:26px; height:6px; border-radius:3px; background:#B65B3C;"></span>
+                        <span style="width:26px; height:6px; border-radius:3px; background:#B65B3C;"></span>
+                        <span style="width:26px; height:6px; border-radius:3px; background:#B65B3C;"></span>
+                        <span style="width:26px; height:6px; border-radius:3px; background:#E4CDBF;"></span>
+                        <span style="width:26px; height:6px; border-radius:3px; background:#E4CDBF;"></span>
+                        <span style="width:26px; height:6px; border-radius:3px; background:#E4CDBF;"></span>
+                      </div>
+                    </div>
+                    <div style="font-family:'Newsreader',serif; font-size:34px; line-height:1.34; color:#3A2317;">Add the minced garlic and red pepper flakes, and cook until fragrant — about a minute.</div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:16px; padding:16px 22px; background:#7C3A22; border-radius:18px; box-shadow:0 10px 24px rgba(124,58,34,0.26);">
+                    <div style="display:flex; align-items:flex-end; gap:3px; height:24px;">
+                      <span style="width:4px; height:24px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out infinite;"></span>
+                      <span style="width:4px; height:24px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out .15s infinite;"></span>
+                      <span style="width:4px; height:24px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out .3s infinite;"></span>
+                      <span style="width:4px; height:24px; border-radius:2px; background:#FBEFE9; transform-origin:bottom; animation:remyBar .9s ease-in-out .45s infinite;"></span>
+                    </div>
+                    <span style="flex:1; color:#FBEFE9; font:600 15px/1 'Hanken Grotesk',sans-serif;">Remy is speaking…</span>
+                    <button style="padding:9px 16px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:transparent; color:#FBEFE9; font:600 13px/1 'Hanken Grotesk',sans-serif;">Wrap up</button>
+                  </div>
+                </div>
+
+                <!-- right: transcript -->
+                <div style="background:rgba(255,255,255,0.5); border:1px solid rgba(124,58,34,0.12); border-radius:22px; padding:24px; height:100%;">
+                  <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#B07257; margin-bottom:16px;">Conversation</div>
+                  <div style="display:flex; flex-direction:column; gap:11px;">
+                    <div style="align-self:flex-start; max-width:90%; background:#FBF3EE; border-radius:14px 14px 14px 4px; padding:12px 15px; font-size:14.5px; line-height:1.42; color:#3A2317;">Water's boiling and the butter's melted. Ready for the garlic?</div>
+                    <div style="align-self:flex-end; max-width:90%; background:#B65B3C; color:#FBEFE9; border-radius:14px 14px 4px 14px; padding:12px 15px; font-size:14.5px; line-height:1.42;">yep, going in now</div>
+                    <div style="align-self:flex-start; display:inline-flex; align-items:center; gap:7px; padding:6px 12px; background:rgba(124,58,34,0.08); border-radius:999px; font:italic 500 12.5px/1.3 'Hanken Grotesk',sans-serif; color:#9c6a50;"><span style="width:5px; height:5px; border-radius:50%; background:#B65B3C;"></span>Moved on to step 3</div>
+                    <div style="align-self:flex-start; max-width:90%; background:#FBF3EE; border-radius:14px 14px 14px 4px; padding:12px 15px; font-size:14.5px; line-height:1.42; color:#3A2317;">Perfect — give it about a minute until it smells fragrant, then we'll add the pasta.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- DESKTOP · LOGIN (split) -->
+      <div style="width:1180px; max-width:100%;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">DESKTOP · LOG IN</div>
+        <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="1180" height="720" url="remy.kitchen/login" hint-size="1180px,720px">
+          <div style="display:flex; min-height:720px; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="width:480px; flex-shrink:0; background:linear-gradient(160deg,#EFE9DE 0%,#E9E1D3 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:48px;">
+              <div style="position:relative; width:170px; height:170px; margin-bottom:26px;">
+                <span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid #D6CDBB;"></span>
+                <span style="position:absolute; inset:30px; border-radius:50%; border:1.5px solid #E1D8C9;"></span>
+                <span style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><img src="assets/remy-mark.png" alt="" style="height:92px; width:auto;" /></span>
+              </div>
+              <div style="font-family:'Newsreader',serif; font-size:36px; color:#23201A; margin-bottom:10px;">Remy</div>
+              <p style="color:#6E6559; font-size:16px; line-height:1.5; max-width:280px; margin:0;">Your invisible sous-chef. Cook and shop entirely hands-free.</p>
+            </div>
+            <div style="flex:1; display:flex; align-items:center; justify-content:center; background:#F4EFE7; padding:48px;">
+              <div style="width:100%; max-width:360px;">
+                <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:28px; margin:0 0 4px;">Welcome back</h1>
+                <p style="color:#6E6559; font-size:14.5px; margin:0 0 26px;">Sign in to pick up where you left off.</p>
+                <div style="display:flex; flex-direction:column; gap:11px;">
+                  <button style="display:flex; align-items:center; justify-content:center; gap:10px; padding:15px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;"><svg width="16" height="19" viewBox="0 0 24 24" fill="#F4EFE7"><path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.98-.83.9-2.18 1.6-3.3 1.5-.14-1.1.42-2.28 1.08-3 .74-.82 2.06-1.44 3.35-1.48zM20.94 17.1c-.6 1.38-.88 2-1.65 3.22-1.08 1.7-2.6 3.82-4.48 3.83-1.67.02-2.1-1.08-4.37-1.08-2.27 0-2.74 1.06-4.4 1.09-1.88.03-3.32-1.84-4.4-3.54C-1.4 15.6.9 8.9 4.9 8.75c1.63-.06 2.77 1.06 3.7 1.06.92 0 2.6-1.31 4.38-1.12.74.03 2.82.3 4.16 2.26-3.65 2-3.07 6.6.8 8.15z"/></svg>Continue with Apple</button>
+                  <button style="display:flex; align-items:center; justify-content:center; gap:10px; padding:15px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 15px/1 'Hanken Grotesk',sans-serif;"><svg width="17" height="17" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>Continue with Google</button>
+                  <div style="display:flex; align-items:center; gap:14px; margin:4px 0; color:#B3A794; font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.5px;"><span style="flex:1; height:1px; background:#E1D8C9;"></span>OR<span style="flex:1; height:1px; background:#E1D8C9;"></span></div>
+                  <input placeholder="Email" style="padding:15px 16px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+                  <input placeholder="Password" type="password" style="padding:15px 16px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+                  <button style="padding:16px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 16px/1 'Hanken Grotesk',sans-serif;">Log in</button>
+                  <button style="border:none; background:transparent; color:#5C7563; font:600 14px/1 'Hanken Grotesk',sans-serif; padding:8px;">Email me a magic link instead</button>
+                </div>
+                <div style="text-align:center; font-size:14px; color:#3A352C; margin-top:22px; padding-top:18px; border-top:1px solid #E7DFD1;">New to Remy? <a href="#" style="color:#5C7563; font-weight:700; text-decoration:underline; text-underline-offset:3px;">Create account</a></div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- DESKTOP · LANDING -->
+      <div style="width:1180px; max-width:100%;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">DESKTOP · LANDING</div>
+        <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="1180" height="720" url="remy.kitchen" hint-size="1180px,720px">
+          <div style="min-height:720px; background:#F4EFE7; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A; display:flex; flex-direction:column;">
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:24px 40px; border-bottom:1px solid #E7DFD1;">
+              <span style="display:flex; align-items:center; gap:10px;"><img src="assets/remy-mark.png" alt="Remy" style="height:34px; width:auto;" /><span style="font-family:'Newsreader',serif; font-size:24px; color:#23201A;">Remy</span></span>
+              <button style="display:flex; align-items:center; gap:8px; padding:9px 15px; border:1px solid #D8CDBB; border-radius:999px; background:#FBF8F3; color:#23201A; font:600 14px/1 'Hanken Grotesk',sans-serif;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#23201A" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>My recipes<span style="display:inline-flex; min-width:19px; height:19px; padding:0 5px; align-items:center; justify-content:center; border-radius:999px; background:#5C7563; color:#fff; font:700 11px/1 'Hanken Grotesk',sans-serif;">3</span></button>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px;">
+              <div style="width:100%; max-width:520px; text-align:center;">
+                <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.8px; text-transform:uppercase; color:#9C9284; margin-bottom:14px;">Invisible sous-chef</div>
+                <h1 style="font-family:'Newsreader',serif; font-weight:400; font-size:46px; line-height:1.12; letter-spacing:-0.6px; margin:0 0 32px;">What are we making today?</h1>
+                <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+                  <div style="display:flex; gap:12px;">
+                    <input placeholder="Paste a recipe link…" style="flex:1; padding:16px 18px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:15px 'Hanken Grotesk',sans-serif;" />
+                    <button style="padding:0 26px; border:none; border-radius:13px; background:#23201A; color:#F4EFE7; font:600 15px/1 'Hanken Grotesk',sans-serif;">Get the recipe</button>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:14px; margin:4px 0; color:#B3A794; font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.5px;"><span style="flex:1; height:1px; background:#E1D8C9;"></span>OR<span style="flex:1; height:1px; background:#E1D8C9;"></span></div>
+                  <div style="display:flex; gap:12px;">
+                    <button style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; padding:15px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 14px/1 'Hanken Grotesk',sans-serif;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23201A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2l1.2-1.8A1 1 0 0 1 8.5 4.7h7a1 1 0 0 1 .8.5L17.5 7h2A1.5 1.5 0 0 1 21 8.5v9A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/><circle cx="12" cy="12.3" r="3.3"/></svg>Snap pages</button>
+                    <button style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; padding:15px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 14px/1 'Hanken Grotesk',sans-serif;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23201A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 16.5l4.5-4 3.3 2.8 3-2.6L20 16"/></svg>Upload</button>
+                    <button style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; padding:15px; border:1px solid #E1D8C9; border-radius:13px; background:#FBF8F3; color:#23201A; font:600 14px/1 'Hanken Grotesk',sans-serif;">Search<span style="color:#B3A794;">›</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- DESKTOP · MODE FORK -->
+      <div style="width:1180px; max-width:100%;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#B65B3C; margin-bottom:12px;">DESKTOP · MODE FORK (COOKING)</div>
+        <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="1180" height="720" url="remy.kitchen/cook" hint-size="1180px,720px">
+          <div style="min-height:720px; background:radial-gradient(80% 55% at 50% -6%, #F9EDE5 0%, rgba(249,237,229,0) 60%), linear-gradient(180deg, #F4E3D8 0%, #EDD6C7 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A; display:flex; flex-direction:column;">
+            <div style="display:flex; align-items:center; gap:14px; padding:24px 40px;">
+              <button style="width:40px; height:40px; border-radius:50%; border:1px solid #E4CDBF; background:rgba(255,255,255,0.55); color:#7C3A22; font-size:20px; line-height:1;">‹</button>
+              <span style="display:flex; align-items:center; gap:10px;"><img src="assets/remy-mark.png" alt="Remy" style="height:30px; width:auto;" /><span style="font-family:'Newsreader',serif; font-size:22px; color:#7C3A22;">Remy</span></span>
+            </div>
+            <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:0 40px 40px;">
+              <div style="width:100%; max-width:560px;">
+                <div style="display:flex; padding:4px; background:rgba(124,58,34,0.1); border-radius:14px; margin-bottom:34px;">
+                  <button style="flex:1; padding:13px; border:none; border-radius:11px; background:transparent; color:#8a6250; font:600 15px/1 'Hanken Grotesk',sans-serif;">Shopping</button>
+                  <button style="flex:1; padding:13px; border:none; border-radius:11px; background:#B65B3C; color:#FBEFE9; font:600 15px/1 'Hanken Grotesk',sans-serif; box-shadow:0 4px 12px rgba(124,58,34,0.24);">Cooking</button>
+                </div>
+                <div style="text-align:center; margin-bottom:28px;">
+                  <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.6px; text-transform:uppercase; color:#B07257; margin-bottom:12px;">Cooking mode</div>
+                  <h1 style="font-family:'Newsreader',serif; font-weight:500; font-size:38px; line-height:1.1; letter-spacing:-0.5px; color:#3A2317; margin:0 0 8px;">Garlic Butter Pasta</h1>
+                  <div style="color:#8a6250; font-size:15px;">6 ingredients&nbsp; ·&nbsp; 6 steps</div>
+                </div>
+                <div style="border-left:3px solid #B65B3C; padding:2px 0 2px 20px; margin:2px 0 22px;">
+                  <div style="font-family:'Newsreader',serif; font-size:24px; line-height:1.32; margin-bottom:8px; color:#3A2317;">“Let's cook. I'll read you each step.”</div>
+                  <div style="font-size:14.5px; line-height:1.55; color:#7a5241;">I'll walk you through all six steps, wait for you, and adjust timings out loud — no need to touch the screen.</div>
+                </div>
+                <button style="width:100%; padding:18px; border:none; border-radius:14px; background:#7C3A22; color:#FBEFE9; font:600 17px/1 'Hanken Grotesk',sans-serif; box-shadow:0 8px 20px rgba(124,58,34,0.28); margin-bottom:14px;">Start cooking</button>
+                <div style="display:flex; align-items:center; justify-content:center; gap:20px;">
+                  <button style="border:none; background:transparent; color:#8a6250; font:600 14px 'Hanken Grotesk',sans-serif;">Save recipe</button>
+                  <span style="width:1px; height:14px; background:rgba(124,58,34,0.2);"></span>
+                  <button style="border:none; background:transparent; color:#8a6250; font:14px 'Hanken Grotesk',sans-serif;">Try another</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- DESKTOP · SHOPPING SESSION -->
+      <div style="width:1180px; max-width:100%;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#5C7563; margin-bottom:12px;">DESKTOP · SHOPPING SESSION</div>
+        <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="1180" height="760" url="remy.kitchen/shop" hint-size="1180px,760px">
+          <div style="min-height:760px; background:radial-gradient(90% 55% at 50% -8%, #F2F6F0 0%, rgba(242,246,240,0) 60%), linear-gradient(180deg, #E9EFE7 0%, #DFE9DD 100%); background-size:140% 160%; animation:remyDrift 26s ease-in-out infinite; padding:34px 44px; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="max-width:1040px; margin:0 auto;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
+                <div style="display:flex; align-items:center; gap:14px;">
+                  <button style="width:40px; height:40px; border-radius:50%; border:1px solid #CDD6CB; background:rgba(255,255,255,0.55); color:#2F4436; font-size:20px; line-height:1;">‹</button>
+                  <span style="display:flex; align-items:center; gap:10px;"><img src="assets/remy-mark.png" alt="Remy" style="height:32px; width:auto;" /><span style="font-family:'Newsreader',serif; font-size:24px; color:#2F4436;">Remy</span></span>
+                </div>
+                <div style="display:flex; align-items:center; gap:16px;">
+                  <span style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#7C9080;">Shopping · Garlic Butter Pasta</span>
+                  <button style="padding:9px 16px; border:1px solid rgba(47,68,54,0.2); border-radius:999px; background:transparent; color:#5E7060; font:600 13px/1 'Hanken Grotesk',sans-serif;">Save recipe</button>
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:1.15fr 0.85fr; gap:28px; align-items:start;">
+                <div style="display:flex; flex-direction:column; gap:16px;">
+                  <div style="background:#F1F5F0; border:1px solid rgba(47,68,54,0.1); border-radius:20px; padding:24px; box-shadow:0 12px 30px rgba(47,68,54,0.08);">
+                    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px;">
+                      <span style="font-family:'Newsreader',serif; font-size:30px; color:#26302A;">4 <span style="font-size:19px; color:#7C9080;">of 6 sorted</span></span>
+                      <span style="font:600 13px/1 'Hanken Grotesk',sans-serif; color:#5C7563;">2 to go</span>
+                    </div>
+                    <div style="height:9px; border-radius:5px; background:#DCE4DA; overflow:hidden;"><span style="display:block; width:66%; height:100%; border-radius:5px; background:#5C7563;"></span></div>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:color-mix(in srgb,#fff 55%,#E8EEE7); border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; background:#5C7563; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px;">✓</span><span style="flex:1; font-size:15px; color:#26302A;">Spaghetti</span><span style="font-size:13px; color:#7C9080;">1 lb</span></div>
+                    <div style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#FBF6EC; border:1px solid #E8DCC4; border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; border:2px solid #C9A24B; color:#B4862F; display:flex; align-items:center; justify-content:center; font:700 12px/1 'Hanken Grotesk';">!</span><span style="flex:1;"><span style="font-size:15px; color:#26302A;">Butter</span><span style="display:block; font-size:12.5px; color:#B4862F;">Only 2 of 4 tbsp — grab more</span></span><span style="font-size:13px; color:#8a8377;">4 tbsp</span></div>
+                    <div style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#EEF2EC; border:1px solid #D7E1D4; border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; background:#5C7563; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px;">⇄</span><span style="flex:1;"><span style="font-size:15px;"><span style="text-decoration:line-through; color:#9aa398;">Parmesan</span> <span style="color:#B3A794;">→</span> <span style="color:#26302A; font-weight:700;">Pecorino</span></span><span style="display:block; font-size:12.5px; color:#5C7563;">Swapped</span></span><span style="font-size:13px; color:#8a8377;">1 cup</span></div>
+                    <div style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(255,255,255,0.4); border:1px solid rgba(47,68,54,0.08); border-radius:13px;"><span style="width:23px; height:23px; border-radius:50%; border:2px solid #B8C2B5;"></span><span style="flex:1; font-size:15px; color:#4d5f52;">Red pepper flakes</span><span style="font-size:13px; color:#8a8377;">1 tsp</span><button style="border:1px solid #C9D0C6; background:transparent; color:#7C9080; border-radius:999px; padding:5px 12px; font:600 12px/1 'Hanken Grotesk';">Skip</button></div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:16px; padding:16px 22px; background:#3F5748; border-radius:18px; box-shadow:0 10px 24px rgba(47,68,54,0.26);">
+                    <span style="position:relative; width:12px; height:12px;"><span style="position:absolute; inset:0; border-radius:50%; background:#A9C0AC; animation:remyPulse 1.4s ease-in-out infinite;"></span></span>
+                    <span style="flex:1; color:#EEF4EC; font:600 15px/1 'Hanken Grotesk',sans-serif;">Listening…</span>
+                    <button style="padding:9px 16px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:transparent; color:#EEF4EC; font:600 13px/1 'Hanken Grotesk',sans-serif;">Wrap up</button>
+                  </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.5); border:1px solid rgba(47,68,54,0.12); border-radius:22px; padding:24px;">
+                  <div style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#7C9080; margin-bottom:16px;">Conversation</div>
+                  <div style="display:flex; flex-direction:column; gap:11px;">
+                    <div style="align-self:flex-start; max-width:90%; background:color-mix(in srgb,#fff 55%,#E8EEE7); border-radius:14px 14px 14px 4px; padding:12px 15px; font-size:14.5px; line-height:1.42; color:#26302A;">What do you already have on hand?</div>
+                    <div style="align-self:flex-end; max-width:90%; background:#5C7563; color:#EEF4EC; border-radius:14px 14px 4px 14px; padding:12px 15px; font-size:14.5px; line-height:1.42;">got spaghetti and butter, only half a stick though</div>
+                    <div style="align-self:flex-start; display:inline-flex; align-items:center; gap:7px; padding:6px 12px; background:rgba(47,68,54,0.08); border-radius:999px; font:italic 500 12.5px/1.3 'Hanken Grotesk',sans-serif; color:#5f7565;"><span style="width:5px; height:5px; border-radius:50%; background:#5C7563;"></span>Noted butter — need a bit more</div>
+                    <div style="align-self:flex-start; max-width:90%; background:color-mix(in srgb,#fff 55%,#E8EEE7); border-radius:14px 14px 14px 4px; padding:12px 15px; font-size:14.5px; line-height:1.42; color:#26302A;">Noted — grab a bit more butter. No parmesan? Pecorino works great, I'll swap it.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <!-- DESKTOP · LIBRARY -->
+      <div style="width:1180px; max-width:100%;">
+        <div style="font:600 12px/1 ui-monospace,monospace; color:#9C9284; margin-bottom:12px;">DESKTOP · LIBRARY</div>
+        <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="1180" height="720" url="remy.kitchen/recipes" hint-size="1180px,720px">
+          <div style="min-height:720px; background:#F4EFE7; font-family:'Hanken Grotesk',system-ui,sans-serif; color:#23201A;">
+            <div style="display:flex; align-items:center; gap:14px; padding:24px 40px; border-bottom:1px solid #E7DFD1;">
+              <button style="width:38px; height:38px; border-radius:50%; border:1px solid #E7DFD1; background:#FBF8F3; color:#23201A; font-size:19px; line-height:1;">‹</button>
+              <span style="font-family:'Newsreader',serif; font-size:24px; color:#23201A;">Saved recipes</span>
+              <span style="font:600 11px/1 'Hanken Grotesk',sans-serif; letter-spacing:1.4px; text-transform:uppercase; color:#9C9284; margin-left:6px;">4</span>
+            </div>
+            <div style="padding:32px 40px;">
+              <div style="max-width:860px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                <div style="display:flex; align-items:center; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                  <div style="width:56px; height:56px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                  <div style="flex:1; min-width:0;"><div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.2;">Garlic Butter Pasta</div><div style="display:flex; align-items:center; gap:8px; margin-top:5px;"><span style="font-size:13px; color:#8a8377;">6 · 6</span><span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; background:#F3E1DB; color:#B0503C; font:600 11px/1 'Hanken Grotesk',sans-serif;"><span style="display:inline-flex; gap:2px;"><span style="width:2px; height:8px; border-radius:1px; background:#B65B3C;"></span><span style="width:2px; height:8px; border-radius:1px; background:#B65B3C;"></span></span>Step 3</span></div></div>
+                  <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px;">×</button>
+                </div>
+                <div style="display:flex; align-items:flex-start; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                  <div style="width:56px; height:56px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                  <div style="flex:1; min-width:0;"><div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.22; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Sheet-Pan Harissa Chicken with Charred Lemon</div><div style="display:flex; align-items:center; gap:8px; margin-top:5px;"><span style="font-size:13px; color:#8a8377;">14 · 9</span><span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; background:#E8EEE7; color:#3F5748; font:600 11px/1 'Hanken Grotesk',sans-serif;"><span style="display:inline-flex; gap:2px;"><span style="width:2px; height:8px; border-radius:1px; background:#5C7563;"></span><span style="width:2px; height:8px; border-radius:1px; background:#5C7563;"></span></span>Shopping</span></div></div>
+                  <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px;">×</button>
+                </div>
+                <div style="display:flex; align-items:center; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                  <div style="width:56px; height:56px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                  <div style="flex:1; min-width:0;"><div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.2;">Miso Butter Roast Chicken</div><div style="font-size:13px; color:#8a8377; margin-top:5px;">9 ingredients · 7 steps</div></div>
+                  <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px;">×</button>
+                </div>
+                <div style="display:flex; align-items:center; gap:14px; padding:16px; border:1px solid #E7DFD1; border-radius:16px; background:#FBF8F3;">
+                  <div style="width:56px; height:56px; border-radius:11px; flex-shrink:0; background:repeating-linear-gradient(135deg,#E7DFD1 0 7px,#EFE8DC 7px 14px);"></div>
+                  <div style="flex:1; min-width:0;"><div style="font-family:'Newsreader',serif; font-size:19px; color:#23201A; line-height:1.2;">Weeknight Dal Tadka</div><div style="font-size:13px; color:#8a8377; margin-top:5px;">11 ingredients · 5 steps</div></div>
+                  <button style="width:30px; height:30px; border:none; background:transparent; color:#B3A794; font-size:20px;">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

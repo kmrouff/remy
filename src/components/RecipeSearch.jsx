@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { searchRecipes, getRecipeDetails } from '../lib/recipes'
 
+function formatMeta(result) {
+  const parts = []
+  if (result.readyInMinutes) parts.push(`${result.readyInMinutes} min`)
+  if (result.servings) parts.push(`serves ${result.servings}`)
+  return parts.join(' · ')
+}
+
 export default function RecipeSearch({ onSelect, onCancel }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState(null)
@@ -39,44 +46,62 @@ export default function RecipeSearch({ onSelect, onCancel }) {
 
   return (
     <div className="recipe-search">
+      <div className="topbar">
+        <button type="button" className="iconbtn" onClick={onCancel} aria-label="Cancel">
+          ‹
+        </button>
+        <span className="topbar__title" style={{ flex: 'initial' }}>
+          Search
+        </span>
+      </div>
+
       <form className="recipe-search__form" onSubmit={handleSearch}>
         <input
           type="text"
           placeholder="Search recipes by name…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="recipe-input__field"
           required
         />
         <button type="submit" className="recipe-input__submit" disabled={status === 'searching'}>
-          {status === 'searching' ? 'Searching…' : 'Search'}
+          {status === 'searching' ? 'Searching…' : 'Go'}
         </button>
       </form>
 
       {error && <p className="recipe-input__error">{error}</p>}
 
       {results && (
-        <ul className="recipe-search__results">
-          {results.length === 0 && <li className="recipe-search__empty">No recipes found.</li>}
-          {results.map((r) => (
-            <li key={r.id}>
-              <button
-                type="button"
-                className="recipe-search__result"
-                onClick={() => handleSelect(r.id)}
-                disabled={status === 'loading'}
-              >
-                {r.image && <img src={r.image} alt="" className="recipe-search__thumb" />}
-                <span>{status === 'loading' && selectedId === r.id ? 'Loading…' : r.title}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <>
+          <div className="loading__card-label">
+            {results.length} result{results.length === 1 ? '' : 's'}
+          </div>
+          <ul className="recipe-search__results">
+            {results.length === 0 && <li className="recipe-search__empty">No recipes found.</li>}
+            {results.map((r) => (
+              <li key={r.id}>
+                <button
+                  type="button"
+                  className="recipe-search__result"
+                  onClick={() => handleSelect(r.id)}
+                  disabled={status === 'loading'}
+                >
+                  {r.image ? (
+                    <img src={r.image} alt="" className="recipe-search__thumb" />
+                  ) : (
+                    <span className="recipe-search__thumb" aria-hidden="true" />
+                  )}
+                  <span className="recipe-search__result-info">
+                    <span className="recipe-search__result-title">{r.title}</span>
+                    <span className="recipe-search__result-meta">
+                      {status === 'loading' && selectedId === r.id ? 'Fetching details…' : formatMeta(r)}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
-
-      <button type="button" className="recipe-input__sample" onClick={onCancel}>
-        Cancel
-      </button>
     </div>
   )
 }

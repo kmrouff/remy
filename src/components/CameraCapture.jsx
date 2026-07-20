@@ -86,8 +86,8 @@ export default function CameraCapture({ onDone, onCancel, maxNewPhotos }) {
     return (
       <div className="camera-capture">
         <div className="camera-capture__error-screen">
-          <p className="camera-capture__error">{error}</p>
-          <button type="button" className="camera-capture__cancel" onClick={handleCancel}>
+          <p className="voice-session__error">{error}</p>
+          <button type="button" className="voice-session__back" onClick={handleCancel}>
             Cancel
           </button>
         </div>
@@ -100,49 +100,61 @@ export default function CameraCapture({ onDone, onCancel, maxNewPhotos }) {
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video ref={videoRef} className="camera-capture__video" autoPlay playsInline muted />
 
-      <button type="button" className="camera-capture__close" onClick={handleCancel} aria-label="Cancel">
-        ×
-      </button>
-
-      {photos.length > 0 && (
-        <div className="camera-capture__thumbs">
-          {photos.map((photo, i) => (
-            <div key={photo.id} className="camera-capture__thumb">
-              <img src={photo.dataUrl} alt={`Page ${i + 1}`} />
-              <button
-                type="button"
-                className="camera-capture__thumb-remove"
-                onClick={() => removePhoto(photo.id)}
-                aria-label={`Remove page ${i + 1}`}
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <p className="camera-capture__counter">
-        {photos.length}/{maxNewPhotos}
-      </p>
-
-      <div className="camera-capture__controls">
-        <button
-          type="button"
-          className="camera-capture__shutter"
-          onClick={handleCapture}
-          disabled={!ready || photos.length >= maxNewPhotos}
-          aria-label="Capture photo"
-        />
+      <div className="camera-capture__scrim-top" aria-hidden="true" />
+      <div className="camera-capture__topbar">
+        <button type="button" className="camera-capture__close" onClick={handleCancel} aria-label="Cancel">
+          ×
+        </button>
+        <span className="camera-capture__hint">Snap each page</span>
+        <span style={{ width: 40, flexShrink: 0 }} aria-hidden="true" />
       </div>
 
-      <button
-        type="button"
-        className="camera-capture__done"
-        onClick={photos.length === 0 ? handleCancel : handleDone}
-      >
-        {photos.length === 0 ? 'Cancel' : `Use ${photos.length} photo${photos.length > 1 ? 's' : ''}`}
-      </button>
+      <div className="camera-capture__guides" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="camera-capture__dock">
+        {photos.length > 0 && (
+          <div className="camera-capture__thumbs">
+            {photos.map((photo, i) => (
+              <div key={photo.id} className="camera-capture__thumb">
+                <img src={photo.dataUrl} alt={`Page ${i + 1}`} />
+                <button
+                  type="button"
+                  className="camera-capture__thumb-remove"
+                  onClick={() => removePhoto(photo.id)}
+                  aria-label={`Remove page ${i + 1}`}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="camera-capture__controls">
+          <span className="camera-capture__counter">
+            {photos.length} / {maxNewPhotos}
+          </span>
+          <button
+            type="button"
+            className="camera-capture__shutter"
+            onClick={handleCapture}
+            disabled={!ready || photos.length >= maxNewPhotos}
+            aria-label="Capture photo"
+          />
+          <div style={{ width: 64, display: 'flex', justifyContent: 'flex-end' }}>
+            {photos.length > 0 && (
+              <button type="button" className="camera-capture__done" onClick={handleDone} aria-label="Use these photos">
+                ✓
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

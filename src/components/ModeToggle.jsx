@@ -15,7 +15,6 @@ export default function ModeToggle({ mode, onChange }) {
       >
         Cooking
       </button>
-      <span className={`mode-toggle__thumb mode-toggle__thumb--${mode}`} aria-hidden="true" />
     </div>
   )
 }

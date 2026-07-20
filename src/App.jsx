@@ -3,6 +3,8 @@ import VoiceSession from './components/VoiceSession'
 import ModeToggle from './components/ModeToggle'
 import RecipeInput from './components/RecipeInput'
 import RecipeLibrary from './components/RecipeLibrary'
+import WelcomeCarousel from './components/WelcomeCarousel'
+import AuthScreen from './components/AuthScreen'
 import {
   getSavedRecipes,
   saveRecipe,
@@ -10,6 +12,7 @@ import {
   saveRecipeProgress,
   clearRecipeProgress,
 } from './lib/savedRecipes'
+import remyMark from './assets/remy-mark.png'
 import './App.css'
 
 // Fallback so the voice loop can still be tested/demoed without a working
@@ -34,6 +37,21 @@ const SAMPLE_RECIPE = {
   ],
 }
 
+const PITCH = {
+  shopping: (recipe) => ({
+    quote: `Let's gather your ${recipe.ingredients.length} ingredients.`,
+    note: "Tell me what you already have and what you're looking at — I'll track down the rest, hands-free.",
+  }),
+  cooking: () => ({
+    quote: "Let's cook. I'll read you each step.",
+    note: "I'll walk you through each step, wait for you, and adjust timings out loud — no need to touch the screen.",
+  }),
+}
+
+function formatIngredient(ing) {
+  return [ing.quantity, ing.unit, ing.item].filter(Boolean).join(' ')
+}
+
 export default function App() {
   const [screen, setScreen] = useState('input') // 'input' | 'confirm' | 'session' | 'library'
   const [recipe, setRecipe] = useState(null)
@@ -42,6 +60,12 @@ export default function App() {
   const [cookingStepIndex, setCookingStepIndex] = useState(0)
   const [shoppingConfirmations, setShoppingConfirmations] = useState({})
   const [sessionKey, setSessionKey] = useState(0)
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(() => localStorage.getItem('remy:hasSeenWelcome') === 'true')
+
+  function handleWelcomeDone() {
+    localStorage.setItem('remy:hasSeenWelcome', 'true')
+    setHasSeenWelcome(true)
+  }
 
   function refreshSavedRecipes() {
     setSavedRecipes(getSavedRecipes())
@@ -99,6 +123,11 @@ export default function App() {
     setScreen('session')
   }
 
+  function handleTryAnother() {
+    setRecipe(null)
+    setScreen('input')
+  }
+
   // Called from within an active VoiceSession, which ends its own call
   // before invoking these — App just needs to persist state and navigate.
   function handlePause() {
@@ -125,6 +154,10 @@ export default function App() {
     setRecipe(saved)
     resetProgressState()
     setScreen('input')
+  }
+
+  if (!hasSeenWelcome) {
+    return <WelcomeCarousel onDone={handleWelcomeDone} />
   }
 
   if (screen === 'session' && recipe) {
@@ -160,62 +193,135 @@ export default function App() {
     )
   }
 
+  if (screen === 'auth') {
+    return <AuthScreen onBack={() => setScreen('input')} />
+  }
+
   if (screen === 'confirm' && recipe) {
     const isSaved = Boolean(recipe.id) && savedRecipes.some((r) => r.id === recipe.id)
     const progress = recipe.progress
+    const pitch = PITCH[mode](recipe)
 
     return (
-      <main className="landing">
-        <h1>Remy</h1>
-        <ModeToggle mode={mode} onChange={setMode} />
-        <div className="landing__card">
-          <h2>{recipe.title}</h2>
-          <p>{recipe.ingredients.length} ingredients · {recipe.steps.length} steps</p>
+      <main className={`app-screen theme-${mode}`}>
+        <div className="topbar">
+          <button type="button" className="iconbtn" onClick={handleTryAnother} aria-label="Back">
+            ‹
+          </button>
+          <span className="topbar__title" style={{ flex: 'initial', margin: '0 auto' }}>
+            Remy
+          </span>
+          <span style={{ width: 38, flexShrink: 0 }} aria-hidden="true" />
+        </div>
 
-          {progress ? (
-            <>
-              <p className="landing__progress-note">
-                Paused in {progress.mode} mode
-                {progress.mode === 'cooking' ? ` at step ${progress.cookingStepIndex + 1}` : ''}.
-              </p>
-              <button type="button" className="landing__start" onClick={() => handleResume(progress)}>
-                Resume where I left off
-              </button>
-              <button type="button" className="landing__save" onClick={handleStartOver}>
-                Start over
-              </button>
-            </>
-          ) : (
-            <button type="button" className="landing__start" onClick={() => setScreen('session')}>
+        <ModeToggle mode={mode} onChange={setMode} />
+
+        {progress ? (
+          <>
+            <div className="confirm__head">
+              <div className="eyebrow">Welcome back</div>
+              <div className="confirm__title">{recipe.title}</div>
+              <div className="confirm__meta">
+                {recipe.ingredients.length} ingredients · {recipe.steps.length} steps
+              </div>
+            </div>
+            <div className="resume__card">
+              <div className="resume__tag">
+                <span className="dot" aria-hidden="true" />
+                PAUSED IN {progress.mode.toUpperCase()}
+              </div>
+              <div className="resume__headline">
+                {progress.mode === 'cooking'
+                  ? `You left off at step ${progress.cookingStepIndex + 1}.`
+                  : "You've started sorting your ingredients."}
+              </div>
+              <div className="resume__excerpt">
+                {progress.mode === 'cooking' && recipe.steps[progress.cookingStepIndex]
+                  ? `"${recipe.steps[progress.cookingStepIndex]}" Everything's saved — pick up right where you were.`
+                  : "Everything's saved — pick up right where you were."}
+              </div>
+              {progress.mode === 'cooking' && (
+                <div className="resume__progress">
+                  {recipe.steps.map((_, i) => (
+                    <span key={i} className={i <= progress.cookingStepIndex ? 'done' : ''} />
+                  ))}
+                </div>
+              )}
+            </div>
+            <div style={{ flex: 1 }} />
+            <button type="button" className="btn-mode" onClick={() => handleResume(progress)}>
+              Resume{progress.mode === 'cooking' ? ` at step ${progress.cookingStepIndex + 1}` : ''}
+            </button>
+            <button type="button" className="btn-mode-outline" onClick={handleStartOver}>
+              Start over from the top
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="confirm__head">
+              <div className="eyebrow">{mode} mode</div>
+              <h1 className="confirm__title">{recipe.title}</h1>
+              <div className="confirm__meta">
+                {recipe.ingredients.length} ingredients · {recipe.steps.length} steps
+              </div>
+            </div>
+            <div className="confirm__pitch">
+              <div className="confirm__pitch-quote">"{pitch.quote}"</div>
+              <div className="confirm__pitch-note">{pitch.note}</div>
+            </div>
+            {mode === 'shopping' && recipe.ingredients[0] && (
+              <div className="confirm__first">
+                First on the list: <strong>{formatIngredient(recipe.ingredients[0])}.</strong>
+              </div>
+            )}
+            {mode === 'cooking' && recipe.steps[0] && (
+              <div className="confirm__first">
+                First up: <strong>{recipe.steps[0]}</strong>
+              </div>
+            )}
+            <div style={{ flex: 1 }} />
+            <button type="button" className="btn-mode" onClick={() => setScreen('session')}>
               Start {mode === 'shopping' ? 'shopping' : 'cooking'}
             </button>
-          )}
-
-          <button type="button" className="landing__save" onClick={handleSaveRecipe} disabled={isSaved}>
-            {isSaved ? 'Saved ✓' : 'Save recipe'}
-          </button>
-          <button
-            type="button"
-            className="landing__back"
-            onClick={() => {
-              setRecipe(null)
-              setScreen('input')
-            }}
-          >
-            Try a different recipe
-          </button>
-        </div>
+            <div className="confirm__foot">
+              <button type="button" onClick={handleSaveRecipe} disabled={isSaved}>
+                {isSaved ? 'Saved ✓' : 'Save recipe'}
+              </button>
+              <span className="sep" aria-hidden="true" />
+              <button type="button" onClick={handleTryAnother}>
+                Try another
+              </button>
+            </div>
+          </>
+        )}
       </main>
     )
   }
 
   return (
     <main className="landing">
-      <h1>Remy</h1>
-      <p className="landing__tagline">Your hands-free cooking companion.</p>
+      <div className="landing__brand">
+        <span className="landing__brand-lockup">
+          <img src={remyMark} alt="Remy" />
+          <span className="wordmark">Remy</span>
+        </span>
+        <button type="button" className="landing__saved-link" onClick={() => setScreen('library')}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+            <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+          </svg>
+          My recipes
+          {savedRecipes.length > 0 && <span>{savedRecipes.length}</span>}
+        </button>
+      </div>
+      <div className="eyebrow">Invisible sous-chef</div>
+      <h1>
+        What are we
+        <br />
+        making today?
+      </h1>
       <RecipeInput onExtracted={handleExtracted} onUseSample={() => handleExtracted(SAMPLE_RECIPE)} />
-      <button type="button" className="landing__library-link" onClick={() => setScreen('library')}>
-        My saved recipes{savedRecipes.length > 0 ? ` (${savedRecipes.length})` : ''}
+      <button type="button" className="recipe-input__sample" onClick={() => setScreen('auth')}>
+        Sign in
       </button>
     </main>
   )
