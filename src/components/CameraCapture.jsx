@@ -19,7 +19,10 @@ export default function CameraCapture({ onDone, onCancel, maxNewPhotos }) {
     async function start() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' },
+          // continuous focus mode is a best-effort hint — ignored where the
+          // browser doesn't support it (notably Safari/iOS), rather than
+          // rejected, so it's safe to always ask for it.
+          video: { facingMode: 'environment', advanced: [{ focusMode: 'continuous' }] },
           audio: false,
         })
         if (cancelled) {

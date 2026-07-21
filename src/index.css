@@ -5,6 +5,17 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
 
+/* Registering these as typed <color> properties is what makes the
+   shopping/cooking mode switch able to fade instead of snap — plain custom
+   properties are just text substitution to the browser, so it can't
+   interpolate between two values unless the property has a declared type. */
+@property --mode { syntax: '<color>'; inherits: true; initial-value: #23201A; }
+@property --mode-deep { syntax: '<color>'; inherits: true; initial-value: #23201A; }
+@property --mode-soft { syntax: '<color>'; inherits: true; initial-value: #FBF8F3; }
+@property --mode-ink { syntax: '<color>'; inherits: true; initial-value: #23201A; }
+@property --mode-tint-top { syntax: '<color>'; inherits: true; initial-value: #F4EFE7; }
+@property --mode-tint-bot { syntax: '<color>'; inherits: true; initial-value: #F4EFE7; }
+
 :root {
   /* — warm neutrals — */
   --paper:          #F4EFE7;   /* app background */
@@ -78,7 +89,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mode theming — put on the screen wrapper; children read var(--mode*). */
+/* Mode theming — put on the screen wrapper; children read var(--mode*).
+   The transition for these lives in App.css on .app-screen.theme-* — that
+   selector always co-occurs with this one and has higher specificity, so a
+   transition declared here would just get silently overwritten rather than
+   merged (transition is a shorthand, not additive across rules). */
 .theme-shopping {
   --mode: var(--sage);   --mode-deep: var(--sage-deep); --mode-ink: var(--sage-ink);
   --mode-soft: var(--sage-soft);

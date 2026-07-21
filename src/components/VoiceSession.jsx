@@ -10,7 +10,7 @@ const MODE_CONTEXT = {
   shopping:
     "The user has switched to Shopping mode. Focus on helping them gather ingredients: what they already have, what they're looking at in the store or pantry, and how much/many they need for this recipe. Use get_shopping_list to check status and confirm_ingredient to record what they find, substitute, or are missing.",
   cooking:
-    "The user has switched to Cooking mode. Focus on guiding them through the recipe step by step: cook times, technique adjustments, and real-time ingredient swaps if something is missing. Use get_next_step to advance through the recipe.",
+    "The user has switched to Cooking mode. Don't jump straight into step one. First, ease them in: ask if their ingredients are prepped and ready (mention anything the early steps specifically call for pre-cutting, peeling, or measuring, if the recipe has that), and whether they've got out the tools/cookware the recipe needs (pans, pots, a cutting board, etc. — infer these from the steps, don't ask generically). Once they confirm they're set, use get_next_step to begin, then guide them through cook times, technique adjustments, and real-time ingredient swaps if something is missing. Keep the pace relaxed and conversational at the start, not mechanical.",
 }
 
 // Greeting spoken when the session first connects, matched to the mode

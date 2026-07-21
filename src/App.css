@@ -21,12 +21,19 @@
   padding: 20px;
   background: var(--paper);
 }
+@property --tint-glow { syntax: '<color>'; inherits: true; initial-value: #F4EFE7; }
+@property --tint-top { syntax: '<color>'; inherits: true; initial-value: #F4EFE7; }
+@property --tint-bot { syntax: '<color>'; inherits: true; initial-value: #F4EFE7; }
+
 .app-screen.theme-shopping,
 .app-screen.theme-cooking {
   background:
     radial-gradient(125% 60% at 50% -10%, var(--tint-glow) 0%, transparent 58%),
     linear-gradient(180deg, var(--tint-top) 0%, var(--tint-bot) 100%);
   background-attachment: fixed;
+  transition: --tint-glow 0.45s ease, --tint-top 0.45s ease, --tint-bot 0.45s ease,
+    --mode 0.45s ease, --mode-deep 0.45s ease, --mode-soft 0.45s ease,
+    --mode-ink 0.45s ease, --mode-tint-top 0.45s ease, --mode-tint-bot 0.45s ease;
 }
 .theme-shopping { --tint-glow: #F2F6F0; --tint-top: #E9EFE7; --tint-bot: #DFE9DD; }
 .theme-cooking  { --tint-glow: #F9EDE5; --tint-top: #F4E3D8; --tint-bot: #EDD6C7; }
