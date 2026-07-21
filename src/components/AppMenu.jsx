@@ -74,7 +74,7 @@ export default function AppMenu({ open, onClose }) {
               ‹
             </button>
           )}
-          <button type="button" className="iconbtn" onClick={onClose} aria-label="Close menu">
+          <button type="button" className="app-menu__close" onClick={onClose} aria-label="Close menu">
             ×
           </button>
         </div>
