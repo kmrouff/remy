@@ -679,6 +679,11 @@
 .app-menu__row span { color: var(--decor); }
 .app-menu__row--support { color: var(--sage-deep); font-weight: 600; }
 .app-menu__row--support span { color: var(--sage-deep); }
+.app-menu__row--account { color: var(--sage-deep); font-weight: 600; gap: 10px; }
+.app-menu__row--account .app-menu__row-main {
+  color: var(--sage-deep); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+}
+.app-menu__row-main strong { font-weight: 700; }
 
 .app-menu__page { padding: 8px 20px 28px; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .app-menu__page p { margin: 0 0 16px; }

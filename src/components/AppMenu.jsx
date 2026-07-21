@@ -25,7 +25,7 @@ const FAQ = [
   },
 ]
 
-export default function AppMenu({ open, onClose }) {
+export default function AppMenu({ open, onClose, user, onAccountClick }) {
   const [view, setView] = useState('menu') // 'menu' | 'mission' | 'faq' | 'contact'
   const [shareStatus, setShareStatus] = useState(null) // null | 'copied' | 'failed'
 
@@ -82,6 +82,16 @@ export default function AppMenu({ open, onClose }) {
 
         {view === 'menu' && (
           <nav className="app-menu__list">
+            <button type="button" className="app-menu__row app-menu__row--account" onClick={onAccountClick}>
+              {user ? (
+                <span className="app-menu__row-main">
+                  Signed in <strong>{user.email}</strong>
+                </span>
+              ) : (
+                'Sign in to sync your recipes'
+              )}
+              <span aria-hidden="true">›</span>
+            </button>
             <button type="button" className="app-menu__row" onClick={() => setView('mission')}>
               Mission
               <span aria-hidden="true">›</span>

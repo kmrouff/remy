@@ -415,7 +415,15 @@ export default function App() {
         </h1>
         <RecipeInput onExtracted={handleExtracted} onUseSample={() => handleExtracted(SAMPLE_RECIPE)} />
       </main>
-      <AppMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <AppMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        user={user}
+        onAccountClick={() => {
+          setMenuOpen(false)
+          setScreen(user ? 'library' : 'auth')
+        }}
+      />
     </>
   )
 }
