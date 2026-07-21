@@ -226,13 +226,17 @@
   width: 100%; padding: 17px; border: none; border-radius: 14px;
   background: var(--mode-deep); color: #fff; font: 600 17px/1 var(--sans);
   box-shadow: 0 8px 20px color-mix(in srgb, var(--mode-deep) 26%, transparent);
+  margin-bottom: 12px;
 }
 .btn-mode-outline {
   width: 100%; padding: 15px; border: 1px solid color-mix(in srgb, var(--mode-deep) 25%, transparent);
   border-radius: 14px; background: transparent; color: var(--mode-deep); font: 600 15px/1 var(--sans);
 }
-.confirm__foot { display: flex; align-items: center; justify-content: center; gap: 20px; }
-.confirm__foot button { border: none; background: transparent; color: color-mix(in srgb, var(--mode-ink) 55%, transparent); font: 14px var(--sans); }
+/* Extra air under the CTA, and real vertical padding on the text buttons:
+   they sit directly beneath a full-width primary action and get tapped with
+   messy hands, so they need a hit area taller than their line-height. */
+.confirm__foot { display: flex; align-items: center; justify-content: center; gap: 20px; padding-top: 6px; }
+.confirm__foot button { border: none; background: transparent; color: color-mix(in srgb, var(--mode-ink) 55%, transparent); font: 14px var(--sans); padding: 8px 4px; }
 .confirm__foot button:first-child { font-weight: 600; }
 .confirm__foot .sep { width: 1px; height: 14px; background: color-mix(in srgb, var(--mode-deep) 20%, transparent); }
 
