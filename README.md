@@ -4,7 +4,7 @@ A hands-free cooking assistant. Bring in a recipe — paste a link, snap the
 cookbook page, or search by name — then talk to Remy while you shop for it or
 cook it, so your hands never leave the food.
 
-Live: https://remy-amber.vercel.app
+Live: https://www.remythechef.com
 
 ## How it works
 
