@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { startVoiceSession } from '../lib/elevenlabs'
+import { shareRecipe } from '../lib/share'
 
 const AGENT_ID = import.meta.env.VITE_ELEVENLABS_AGENT_ID
 
@@ -53,6 +54,7 @@ export default function VoiceSession({
   const [log, setLog] = useState([])
   const [error, setError] = useState(null)
   const [showWrapUp, setShowWrapUp] = useState(false)
+  const [shareStatus, setShareStatus] = useState(null) // null | 'copied' | 'failed'
 
   const conversationRef = useRef(null)
   // Mirror of the latest props/state so the client-tool closures (registered
@@ -172,6 +174,15 @@ export default function VoiceSession({
     setStatus('disconnecting')
     await conversationRef.current?.endSession()
     action()
+  }
+
+  // Shares as a side action, not an end state — the wrap-up sheet stays open.
+  async function handleShare() {
+    const result = await shareRecipe(recipe)
+    if (result === 'copied' || result === 'failed') {
+      setShareStatus(result)
+      setTimeout(() => setShareStatus(null), 2000)
+    }
   }
 
   function handleSkipIngredient(item) {
@@ -426,6 +437,23 @@ export default function VoiceSession({
               <span>
                 <span className="wrap-up__opt-title">Finish — all done</span>
                 <span className="wrap-up__opt-note">Clear this session</span>
+              </span>
+            </button>
+            <button type="button" className="wrap-up__opt" onClick={handleShare}>
+              <span className="wrap-up__opt-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" />
+                  <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+                </svg>
+              </span>
+              <span>
+                <span className="wrap-up__opt-title">
+                  {shareStatus === 'copied' ? 'Link copied' : shareStatus === 'failed' ? "Couldn't share" : 'Share what you cooked'}
+                </span>
+                <span className="wrap-up__opt-note">Tell a friend you used Remy</span>
               </span>
             </button>
             <button type="button" className="wrap-up__keep" onClick={() => setShowWrapUp(false)}>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { SUPPORT_URL } from '../lib/config'
+import { SUPPORT_URL, CONTACT_EMAIL } from '../lib/config'
+import { shareApp } from '../lib/share'
 
 const FAQ = [
   {
@@ -8,11 +9,11 @@ const FAQ = [
   },
   {
     q: 'Is my data safe?',
-    a: "Signing in is optional. As a guest, nothing ever leaves your device. If you do sign in, your recipes sync through Supabase, and I don't look at them.",
+    a: "Signing in is optional. As a guest, nothing ever leaves your device. If you do sign in, your recipes are stored in a secure database — never sold, never reused. Your voice and conversations aren't stored either; I have no need for them.",
   },
   {
     q: 'Why does a cooking app need money?',
-    a: "Hosting the site itself is free. The part that costs something is the voice conversations, recipe extraction, and search — those all call outside services billed per use.",
+    a: "Hosting the site itself is basically free, unless this grows a lot. What actually costs money is the voice interface — I pay for that out of my own pocket right now, so buying a coffee genuinely helps keep it running.",
   },
   {
     q: 'Will you keep building this?',
@@ -26,11 +27,23 @@ const FAQ = [
 
 export default function AppMenu({ open, onClose }) {
   const [view, setView] = useState('menu') // 'menu' | 'mission' | 'faq' | 'contact'
+  const [shareStatus, setShareStatus] = useState(null) // null | 'copied' | 'failed'
 
   // Land back on the main list every time the menu is reopened.
   useEffect(() => {
-    if (open) setView('menu')
+    if (open) {
+      setView('menu')
+      setShareStatus(null)
+    }
   }, [open])
+
+  async function handleShare() {
+    const result = await shareApp()
+    if (result === 'copied' || result === 'failed') {
+      setShareStatus(result)
+      setTimeout(() => setShareStatus(null), 2000)
+    }
+  }
 
   useEffect(() => {
     if (!open) return
@@ -89,6 +102,10 @@ export default function AppMenu({ open, onClose }) {
               Buy me a coffee
               <span aria-hidden="true">↗</span>
             </a>
+            <button type="button" className="app-menu__row" onClick={handleShare}>
+              {shareStatus === 'copied' ? 'Link copied' : shareStatus === 'failed' ? "Couldn't share" : 'Share Remy with a friend'}
+              <span aria-hidden="true">⇗</span>
+            </button>
           </nav>
         )}
 
@@ -120,9 +137,8 @@ export default function AppMenu({ open, onClose }) {
         {view === 'contact' && (
           <div className="app-menu__page">
             <p>Bug? Idea? Just want to say hi? I read everything that comes in.</p>
-            {/* TODO: swap in the real contact address */}
-            <a href="mailto:hello@remy.app" className="app-menu__contact-link">
-              hello@remy.app
+            <a href={`mailto:${CONTACT_EMAIL}`} className="app-menu__contact-link">
+              {CONTACT_EMAIL}
             </a>
           </div>
         )}
