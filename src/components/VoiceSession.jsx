@@ -4,18 +4,16 @@ import { shareRecipe } from '../lib/share'
 
 const AGENT_ID = import.meta.env.VITE_ELEVENLABS_AGENT_ID
 
-// Sent to the agent via sendContextualUpdate right after connecting, so it
-// knows which mode was picked on the confirm screen.
+// Sent via sendContextualUpdate right after connecting. Deliberately just a
+// mode announcement: the agent's full behavioral spec (shopping/cooking flow,
+// wake-word rules, tool contracts) lives in the dashboard system prompt —
+// one source of truth, so the two can't drift apart. The system prompt
+// promises "the app tells you which mode this session is in"; this is that.
 const MODE_CONTEXT = {
   shopping:
-    "The user has switched to Shopping mode. Start by asking whether they're already at the store (real-time — go item by item, they can't fully verify what's at home) or still at home planning (broader — checking what they already have on hand). Use get_shopping_list to check status.\n\n" +
-    "Every ingredient you discuss MUST end with a confirm_ingredient call — including when you judge an amount is probably enough. Saying 'okay, that should be enough' out loud without calling the tool leaves that item stuck as unresolved on their screen; the acknowledgement and the tool call are not optional alternatives, always do both.\n\n" +
-    "Ingredients don't have to be resolved in list order. If the user volunteers something out of sequence ('oh, I've got parsley' while you were on a different item), match it against the list and confirm it immediately — don't make them wait for you to reach it. Keep track of what's still unresolved and naturally steer toward those, but follow the user's lead over strict list order.\n\n" +
-    "When something's unavailable, never ask permission first ('would you like a substitute?'). In the same breath as noting they don't have it, propose ONE specific, sensible substitute by name based on common cooking knowledge. If they decline it or have nothing suitable, ask whether they'd rather grab it later (they're planning to buy it, just not in hand right now) or skip it for this cook entirely — either way call confirm_ingredient with status 'missing', and put which one it was in the note (e.g. 'buying later' vs 'skipping this time') so it shows correctly on their screen. At home specifically, if they're unsure whether they have something, lean toward suggesting they just pick it up rather than treating it as urgent.\n\n" +
-    "Once everything's been gone through, tell them shopping's done — you can't switch them into Cooking mode yourself mid-call, so point them to the 'Done shopping' option to continue there, rather than trying to start reading recipe steps.",
+    'This session is Shopping mode — the user is gathering ingredients for this recipe. Follow your Shopping instructions.',
   cooking:
-    "The user has switched to Cooking mode. First, call get_shopping_list once to see what happened during shopping — any substitutions, partial amounts, or skipped/deferred ingredients — before saying anything about ingredients or steps. Carry that forward: when a step calls for something that was substituted, refer to what they actually have rather than reading the original ingredient name verbatim; if something was left missing, don't wait for them to hit a wall — flag it naturally when its step comes up and suggest how to adjust.\n\n" +
-    "Don't jump straight into step one. Ease them in: ask if their ingredients are prepped and ready (mention anything the early steps specifically call for pre-cutting, peeling, or measuring, if the recipe has that), and whether they've got out the tools/cookware the recipe needs (pans, pots, a cutting board, etc. — infer these from the steps, don't ask generically). Once they confirm they're set, use get_next_step to begin, then guide them through cook times, technique adjustments, and real-time ingredient swaps if something is missing. Keep the pace relaxed and conversational at the start, not mechanical.",
+    'This session is Cooking mode — the user is ready to cook. Follow your Cooking instructions.',
 }
 
 // Greeting spoken when the session first connects, matched to the mode
