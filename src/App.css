@@ -132,7 +132,16 @@
 }
 
 /* ============ EXTRACTION LOADING ============ */
-.loading { flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: 40px; text-align: center; }
+/* Takes over the screen rather than stacking under the landing hero — the
+   design drops the hero and "My recipes" while reading, keeping only the
+   wordmark, so nothing competes with the progress. */
+.loading {
+  position: fixed; inset: 0; z-index: 100; overflow-y: auto;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 32px 24px calc(28px + env(safe-area-inset-bottom));
+  background: var(--paper); text-align: center;
+}
+.loading__wordmark { align-self: flex-start; margin-bottom: 56px; }
 .loading__spinner { position: relative; width: 70px; height: 70px; margin-bottom: 26px; }
 .loading__spinner span.ring {
   position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--hairline-strong);
@@ -375,14 +384,20 @@
 .wrap-up__sub { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
 .wrap-up__opt { width: 100%; display: flex; align-items: center; gap: 14px; padding: 16px 18px;
   border: 1px solid var(--hairline); border-radius: 15px; background: var(--surface); margin-bottom: 11px; text-align: left; }
-.wrap-up__opt--primary { border: 1.5px solid var(--clay); background: color-mix(in srgb, var(--clay-soft) 60%, #fff); }
+/* Accent follows the active mode — a terracotta sheet inside a sage shopping
+   session would read as a stray colour (handoff hardcoded --clay here). */
+.wrap-up__opt--primary { border: 1.5px solid var(--mode); background: color-mix(in srgb, var(--mode-soft) 60%, #fff); }
 .wrap-up__opt-icon { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--surface-2); color: var(--ink); }
-.wrap-up__opt--primary .wrap-up__opt-icon { background: var(--clay); color: #fff; }
+.wrap-up__opt-icon--save { color: var(--sage); }
+.wrap-up__opt--primary .wrap-up__opt-icon { background: var(--mode); color: #fff; }
+.wrap-up__opt-icon .pause-bars { display: inline-flex; gap: 3px; }
+.wrap-up__opt-icon .pause-bars span { width: 3px; height: 13px; border-radius: 1.5px; background: currentColor; }
 .wrap-up__opt-title { display: block; font: 600 15.5px/1.2 var(--sans); color: var(--ink); }
 .wrap-up__opt--primary .wrap-up__opt-title { font-weight: 700; }
 .wrap-up__opt-note { display: block; font-size: 13px; color: var(--faint); margin-top: 2px; }
-.wrap-up__keep { width: 100%; border: none; background: transparent; color: var(--muted); font: 600 14px/1 var(--sans); padding: 6px; }
+.wrap-up__keep { width: 100%; border: none; background: transparent;
+  color: color-mix(in srgb, var(--mode-deep) 70%, var(--muted)); font: 600 14px/1 var(--sans); padding: 6px; }
 
 /* ============ AUTH ============ */
 .auth { flex: 1; min-height: 100dvh; display: flex; flex-direction: column; padding: 40px 26px; background: var(--paper); }
@@ -518,8 +533,14 @@ span.recipe-library__thumb, span.recipe-search__thumb {
 .welcome__source-stack { display: flex; flex-direction: column; gap: 9px; }
 .welcome__source-icon {
   width: 48px; height: 48px; border-radius: 13px; background: var(--surface); border: 1px solid var(--hairline-strong);
-  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
 }
+.welcome__mark-link { width: 20px; height: 3px; border-radius: 2px; background: var(--decor); transform: rotate(-40deg); }
+.welcome__mark-photo {
+  width: 22px; height: 17px; border-radius: 4px;
+  background: repeating-linear-gradient(135deg, var(--hairline-strong) 0 5px, var(--surface-2) 5px 10px);
+}
+.welcome__mark-search { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--decor); }
 .welcome__arrow { color: var(--hairline-strong); font-size: 24px; }
 .welcome__recipe-card {
   width: 124px; border-radius: 15px; background: var(--surface); border: 1px solid var(--hairline-strong);
@@ -527,7 +548,7 @@ span.recipe-library__thumb, span.recipe-search__thumb {
 }
 .welcome__recipe-card-image { height: 46px; margin: -13px -13px 0; background: var(--surface-2); }
 .welcome__recipe-card-line { height: 6px; border-radius: 3px; background: var(--hairline-strong); width: 70%; }
-.welcome__recipe-card-line--title { height: 9px; width: 82%; background: var(--faint); }
+.welcome__recipe-card-line--title { height: 9px; width: 82%; background: var(--decor); }
 
 /* card 3: mode cards */
 .welcome__modes { display: flex; gap: 14px; }

@@ -82,6 +82,7 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
   if (status === 'loading') {
     return (
       <div className="loading">
+        <span className="wordmark loading__wordmark">Remy</span>
         <div className="loading__spinner">
           <span className="ring" />
           <span className="ring" />

@@ -19,10 +19,18 @@ const CARDS = [
     text: 'Paste a link, snap the cookbook page, or search by name. Remy pulls out the ingredients and steps in seconds.',
     diagram: (
       <div className="welcome__sources">
+        {/* abstracted source marks — a link, a photo, a search ring.
+            Deliberately geometric, not emoji, to sit with the type. */}
         <div className="welcome__source-stack">
-          <span className="welcome__source-icon">🔗</span>
-          <span className="welcome__source-icon">📷</span>
-          <span className="welcome__source-icon">🔍</span>
+          <span className="welcome__source-icon">
+            <i className="welcome__mark-link" />
+          </span>
+          <span className="welcome__source-icon">
+            <i className="welcome__mark-photo" />
+          </span>
+          <span className="welcome__source-icon">
+            <i className="welcome__mark-search" />
+          </span>
         </div>
         <span className="welcome__arrow">→</span>
         <div className="welcome__recipe-card">

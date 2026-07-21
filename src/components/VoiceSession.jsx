@@ -399,7 +399,12 @@ export default function VoiceSession({
                 : "Nothing's lost either way."}
             </div>
             <button type="button" className="wrap-up__opt wrap-up__opt--primary" onClick={() => endThenRun(onPause)}>
-              <span className="wrap-up__opt-icon">⏸</span>
+              <span className="wrap-up__opt-icon">
+                <span className="pause-bars" aria-hidden="true">
+                  <span />
+                  <span />
+                </span>
+              </span>
               <span>
                 <span className="wrap-up__opt-title">Pause &amp; resume later</span>
                 <span className="wrap-up__opt-note">
@@ -410,7 +415,7 @@ export default function VoiceSession({
               </span>
             </button>
             <button type="button" className="wrap-up__opt" onClick={() => endThenRun(onSaveAndEnd)}>
-              <span className="wrap-up__opt-icon">♥</span>
+              <span className="wrap-up__opt-icon wrap-up__opt-icon--save">♥</span>
               <span>
                 <span className="wrap-up__opt-title">Save recipe &amp; end</span>
                 <span className="wrap-up__opt-note">Keep it in your library</span>

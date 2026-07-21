@@ -18,6 +18,10 @@
      counts, meta). Darkened within the same warm-grey family to 4.51:1 on
      paper / 4.87:1 on surface. */
   --faint:          #766C5C;   /* tertiary / labels */
+  /* The designer's original #9C9284, kept for non-text decoration (icon
+     marks, skeleton bars). Contrast minimums don't apply to these, and
+     darkening them to --faint made them read heavier than intended. */
+  --decor:          #9C9284;
   --hairline:       #E7DFD1;
   --hairline-strong:#D8CDBB;
 
