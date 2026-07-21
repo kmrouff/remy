@@ -1,11 +1,10 @@
 /**
- * Recipe thumbnail, with a designed fallback for the common no-image case.
+ * Left-hand recipe thumbnail, for lists where the image leads the row.
  *
- * Only Spoonacular supplies an image — recipes extracted from a URL or a
- * photo have none, so the empty state is the norm, not the exception. It
- * keeps the tile (dropping it would ragged-edge the text in a mixed list)
- * and fills it with the title's initial in the display serif: quiet,
- * per-recipe, and legible as a deliberate choice rather than a gap.
+ * Used by search, whose results are Spoonacular-only and so effectively
+ * always have an image; the initial is a rare-miss fallback that stops the
+ * row collapsing. The library doesn't use this — its thumbnail sits on the
+ * right precisely so it can be absent without disturbing anything.
  */
 export default function RecipeThumb({ recipe, base }) {
   if (recipe.image) {

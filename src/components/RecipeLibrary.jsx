@@ -1,5 +1,12 @@
-import RecipeThumb from './RecipeThumb'
-
+/**
+ * Saved recipes.
+ *
+ * The thumbnail sits on the *right* of each row. Only Spoonacular supplies an
+ * image — URL and photo extraction never do — so a left-hand thumbnail would
+ * either need a placeholder in most rows, or would shift the title's left edge
+ * between rows that have one and rows that don't. On the right it can simply
+ * be absent, and titles stay on a fixed left edge to scan down.
+ */
 export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
   return (
     <main className="recipe-library">
@@ -20,7 +27,6 @@ export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
           <ul className="recipe-library__list">
             {recipes.map((recipe) => (
               <li key={recipe.id} className="recipe-library__item">
-                <RecipeThumb recipe={recipe} base="recipe-library__thumb" />
                 <button type="button" className="recipe-library__item-button" onClick={() => onSelect(recipe)}>
                   <span className="recipe-library__item-title">{recipe.title}</span>
                   <span className="recipe-library__item-meta">
@@ -36,6 +42,7 @@ export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
                     )}
                   </span>
                 </button>
+                {recipe.image && <img src={recipe.image} alt="" className="recipe-library__thumb" />}
                 <button
                   type="button"
                   className="recipe-library__item-remove"
