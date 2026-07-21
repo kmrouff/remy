@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import remyMark from '../assets/remy-mark.png'
-
-const APPLE_ICON = (
-  <svg width="16" height="19" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.98-.83.9-2.18 1.6-3.3 1.5-.14-1.1.42-2.28 1.08-3 .74-.82 2.06-1.44 3.35-1.48zM20.94 17.1c-.6 1.38-.88 2-1.65 3.22-1.08 1.7-2.6 3.82-4.48 3.83-1.67.02-2.1-1.08-4.37-1.08-2.27 0-2.74 1.06-4.4 1.09-1.88.03-3.32-1.84-4.4-3.54C-1.4 15.6.9 8.9 4.9 8.75c1.63-.06 2.77 1.06 3.7 1.06.92 0 2.6-1.31 4.38-1.12.74.03 2.82.3 4.16 2.26-3.65 2-3.07 6.6.8 8.15z" />
-  </svg>
-)
+import {
+  isAuthConfigured,
+  signInWithGoogle,
+  signInWithMagicLink,
+  signInWithPassword,
+  signUpWithPassword,
+} from '../lib/auth'
 
 const GOOGLE_ICON = (
-  <svg width="17" height="17" viewBox="0 0 48 48">
+  <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true">
     <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z" />
     <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z" />
     <path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z" />
@@ -16,9 +17,106 @@ const GOOGLE_ICON = (
   </svg>
 )
 
-export default function AuthScreen({ onBack }) {
+/**
+ * Sign-in / sign-up.
+ *
+ * Signing in is optional — Remy works as a guest, and an account only adds
+ * cross-device sync — so this screen is reachable but never blocks the app.
+ *
+ * The designed screens also carried a "Continue with Apple" button. Sign in
+ * with Apple on the web needs a paid Apple Developer account, so rather than
+ * ship a button that fails, it's left out until that's set up.
+ */
+export default function AuthScreen({ onBack, onSignedIn }) {
   const [mode, setMode] = useState('login') // 'login' | 'signup'
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [status, setStatus] = useState('idle') // idle | working | sent | check-email
+  const [error, setError] = useState(null)
+
   const isLogin = mode === 'login'
+  const busy = status === 'working'
+
+  function reset(next) {
+    setMode(next)
+    setError(null)
+    setStatus('idle')
+  }
+
+  async function run(action) {
+    setStatus('working')
+    setError(null)
+    const result = await action()
+    if (result?.error) {
+      setError(result.error)
+      setStatus('idle')
+      return null
+    }
+    return result ?? {}
+  }
+
+  async function handleGoogle() {
+    // On success the browser leaves for Google and returns to the app, so
+    // there's nothing to do here — the session arrives via onAuthStateChange.
+    await run(signInWithGoogle)
+  }
+
+  async function handlePasswordSubmit(e) {
+    e.preventDefault()
+    if (!email.trim() || !password || busy) return
+    const result = await run(() =>
+      isLogin ? signInWithPassword(email.trim(), password) : signUpWithPassword(email.trim(), password)
+    )
+    if (!result) return
+    if (result.needsEmailConfirmation) {
+      setStatus('check-email')
+      return
+    }
+    onSignedIn?.()
+  }
+
+  async function handleMagicLink() {
+    if (!email.trim() || busy) {
+      if (!email.trim()) setError('Enter your email first, then I can send you a link.')
+      return
+    }
+    const result = await run(() => signInWithMagicLink(email.trim()))
+    if (result) setStatus('sent')
+  }
+
+  if (status === 'sent' || status === 'check-email') {
+    return (
+      <div className="auth">
+        <div className="topbar">
+          <button type="button" className="iconbtn" onClick={onBack} aria-label="Back">
+            ‹
+          </button>
+        </div>
+        <div className="auth__brand">
+          <img src={remyMark} alt="Remy" />
+        </div>
+        <h1>Check your email</h1>
+        <p className="auth__sub">
+          {status === 'sent'
+            ? `We sent a sign-in link to ${email}. Open it on this device and you'll be signed in.`
+            : `We sent a confirmation link to ${email}. Open it to finish creating your account.`}
+        </p>
+        <div style={{ flex: 1 }} />
+        <p className="auth__foot">
+          Wrong address?{' '}
+          <a
+            href="#back"
+            onClick={(e) => {
+              e.preventDefault()
+              setStatus('idle')
+            }}
+          >
+            Try another
+          </a>
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="auth">
@@ -42,33 +140,61 @@ export default function AuthScreen({ onBack }) {
 
       <h1>{isLogin ? 'Welcome back' : 'Create your account'}</h1>
       <p className="auth__sub">
-        {isLogin ? 'Sign in to pick up where you left off.' : 'Your recipes, saved and ready — on any device.'}
+        {isLogin
+          ? 'Sign in to reach your recipes on any device.'
+          : 'Your recipes, saved and ready — on any device.'}
       </p>
 
-      <div className="auth__methods">
-        <button type="button" className="btn-oauth btn-oauth--apple">
-          {APPLE_ICON}
-          {isLogin ? 'Continue with Apple' : 'Sign up with Apple'}
-        </button>
-        <button type="button" className="btn-oauth btn-oauth--google">
+      {!isAuthConfigured && (
+        <p className="recipe-input__error">
+          Accounts aren't set up in this environment yet — you can keep cooking as a guest, and your
+          recipes stay saved on this device.
+        </p>
+      )}
+
+      <form className="auth__methods" onSubmit={handlePasswordSubmit}>
+        <button
+          type="button"
+          className="btn-oauth btn-oauth--google"
+          onClick={handleGoogle}
+          disabled={busy || !isAuthConfigured}
+        >
           {GOOGLE_ICON}
           {isLogin ? 'Continue with Google' : 'Sign up with Google'}
         </button>
 
-        <div className="recipe-input__divider">or</div>
+        <div className="recipe-input__divider">OR</div>
 
-        <input type="email" placeholder="Email" className="recipe-input__field" />
-        <input type="password" placeholder={isLogin ? 'Password' : 'Choose a password'} className="recipe-input__field" />
+        <input
+          type="email"
+          autoComplete="email"
+          placeholder="Email"
+          className="recipe-input__field"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={!isAuthConfigured}
+        />
+        <input
+          type="password"
+          autoComplete={isLogin ? 'current-password' : 'new-password'}
+          placeholder={isLogin ? 'Password' : 'Choose a password'}
+          className="recipe-input__field"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={!isAuthConfigured}
+        />
 
-        <button type="button" className="btn-primary">
-          {isLogin ? 'Log in' : 'Create account'}
+        {error && <p className="recipe-input__error">{error}</p>}
+
+        <button type="submit" className="btn-primary" disabled={busy || !isAuthConfigured}>
+          {busy ? 'One moment…' : isLogin ? 'Log in' : 'Create account'}
         </button>
         {isLogin && (
-          <button type="button" className="auth__magic">
+          <button type="button" className="auth__magic" onClick={handleMagicLink} disabled={busy || !isAuthConfigured}>
             Email me a magic link instead
           </button>
         )}
-      </div>
+      </form>
 
       {!isLogin && (
         <p className="auth__legal">
@@ -82,14 +208,14 @@ export default function AuthScreen({ onBack }) {
         {isLogin ? (
           <>
             New to Remy?{' '}
-            <a href="#signup" onClick={(e) => { e.preventDefault(); setMode('signup') }}>
+            <a href="#signup" onClick={(e) => { e.preventDefault(); reset('signup') }}>
               Create account
             </a>
           </>
         ) : (
           <>
             Already have an account?{' '}
-            <a href="#login" onClick={(e) => { e.preventDefault(); setMode('login') }}>
+            <a href="#login" onClick={(e) => { e.preventDefault(); reset('login') }}>
               Log in
             </a>
           </>

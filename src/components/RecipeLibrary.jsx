@@ -7,7 +7,22 @@
  * between rows that have one and rows that don't. On the right it can simply
  * be absent, and titles stay on a fixed left edge to scan down.
  */
-export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
+export default function RecipeLibrary({
+  recipes,
+  user,
+  storageError,
+  onSelect,
+  onRemove,
+  onBack,
+  onSignIn,
+  onSignedOut,
+}) {
+  async function handleSignOut() {
+    const { signOut } = await import('../lib/auth')
+    await signOut()
+    onSignedOut?.()
+  }
+
   return (
     <main className="recipe-library">
       <div className="recipe-library__head">
@@ -15,6 +30,30 @@ export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
           ‹
         </button>
         <span className="wordmark">Saved recipes</span>
+      </div>
+
+      {storageError && <p className="recipe-input__error">{storageError}</p>}
+
+      {/* Account lives here rather than on the landing screen: this is the
+          only place where being signed in changes what you see. */}
+      <div className="recipe-library__account">
+        {user ? (
+          <>
+            <span className="recipe-library__account-who">
+              Synced to <strong>{user.email}</strong>
+            </span>
+            <button type="button" className="recipe-library__account-action" onClick={handleSignOut}>
+              Sign out
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="recipe-library__account-who">Saved on this device only</span>
+            <button type="button" className="recipe-library__account-action" onClick={onSignIn}>
+              Sign in to sync
+            </button>
+          </>
+        )}
       </div>
 
       {recipes.length === 0 ? (

@@ -494,6 +494,20 @@
   color: var(--faint); font-size: 20px; flex-shrink: 0; }
 .recipe-library__empty { color: var(--muted); text-align: center; margin-top: 40px; }
 
+/* account strip — quiet, since syncing is optional and guests are first-class */
+.recipe-library__account {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: 14px 0 4px; padding: 12px 14px;
+  border: 1px solid var(--hairline); border-radius: var(--radius-btn); background: var(--surface);
+}
+.recipe-library__account-who { font-size: 13px; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.recipe-library__account-who strong { color: var(--ink-soft); font-weight: 600; }
+.recipe-library__account-action {
+  flex-shrink: 0; border: none; background: transparent; padding: 4px;
+  color: var(--sage-deep); font: 600 13px/1 var(--sans);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
 /* ============ DESKTOP / WEB-APP ============
    Mobile-first is the priority; these widen the layout gracefully.
    Screens centre in a comfortable column; the mode tint still covers the

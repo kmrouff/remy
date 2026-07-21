@@ -1,16 +1,18 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import VoiceSession from './components/VoiceSession'
 import ModeToggle from './components/ModeToggle'
 import RecipeInput from './components/RecipeInput'
 import RecipeLibrary from './components/RecipeLibrary'
 import WelcomeCarousel from './components/WelcomeCarousel'
 import AuthScreen from './components/AuthScreen'
+import { useSession } from './lib/auth'
 import {
   getSavedRecipes,
   saveRecipe,
   removeSavedRecipe,
   saveRecipeProgress,
   clearRecipeProgress,
+  claimLocalRecipes,
 } from './lib/savedRecipes'
 import remyMark from './assets/remy-mark.png'
 import './App.css'
@@ -60,21 +62,51 @@ export default function App() {
     window.location.hash === '#auth' ? 'auth' : 'input'
   )
   const [recipe, setRecipe] = useState(null)
-  const [savedRecipes, setSavedRecipes] = useState(() => getSavedRecipes())
+  const [savedRecipes, setSavedRecipes] = useState([])
   const [mode, setMode] = useState('shopping') // 'shopping' | 'cooking'
   const [cookingStepIndex, setCookingStepIndex] = useState(0)
   const [shoppingConfirmations, setShoppingConfirmations] = useState({})
   const [sessionKey, setSessionKey] = useState(0)
   const [hasSeenWelcome, setHasSeenWelcome] = useState(() => localStorage.getItem('remy:hasSeenWelcome') === 'true')
+  const [storageError, setStorageError] = useState(null)
+
+  const { user, loading: sessionLoading } = useSession()
 
   function handleWelcomeDone() {
     localStorage.setItem('remy:hasSeenWelcome', 'true')
     setHasSeenWelcome(true)
   }
 
-  function refreshSavedRecipes() {
-    setSavedRecipes(getSavedRecipes())
-  }
+  const refreshSavedRecipes = useCallback(async () => {
+    try {
+      setSavedRecipes(await getSavedRecipes())
+      setStorageError(null)
+    } catch (e) {
+      setStorageError(e.message)
+    }
+  }, [])
+
+  // Load the library once we know whether we're a guest or signed in, and
+  // reload whenever that changes. On the first authenticated load, any
+  // recipes saved on this device get claimed into the account first, so
+  // signing in never looks like it wiped them.
+  useEffect(() => {
+    if (sessionLoading) return
+    let cancelled = false
+
+    ;(async () => {
+      try {
+        if (user) await claimLocalRecipes()
+      } catch (e) {
+        if (!cancelled) setStorageError(e.message)
+      }
+      if (!cancelled) await refreshSavedRecipes()
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [user, sessionLoading, refreshSavedRecipes])
 
   function resetProgressState() {
     setCookingStepIndex(0)
@@ -95,15 +127,23 @@ export default function App() {
     setSessionKey((k) => k + 1)
   }
 
-  function handleSaveRecipe() {
-    const saved = saveRecipe(recipe)
-    setRecipe(saved)
-    refreshSavedRecipes()
+  async function handleSaveRecipe() {
+    try {
+      const saved = await saveRecipe(recipe)
+      setRecipe(saved)
+      await refreshSavedRecipes()
+    } catch (e) {
+      setStorageError(e.message)
+    }
   }
 
-  function handleRemoveSaved(id) {
-    removeSavedRecipe(id)
-    refreshSavedRecipes()
+  async function handleRemoveSaved(id) {
+    try {
+      await removeSavedRecipe(id)
+      await refreshSavedRecipes()
+    } catch (e) {
+      setStorageError(e.message)
+    }
   }
 
   function handleSelectSaved(saved) {
@@ -118,11 +158,15 @@ export default function App() {
     setScreen('session')
   }
 
-  function handleStartOver() {
+  async function handleStartOver() {
     if (recipe.id) {
-      clearRecipeProgress(recipe.id)
-      refreshSavedRecipes()
-      setRecipe((prev) => (prev ? { ...prev, progress: null } : prev))
+      try {
+        await clearRecipeProgress(recipe.id)
+        setRecipe((prev) => (prev ? { ...prev, progress: null } : prev))
+        await refreshSavedRecipes()
+      } catch (e) {
+        setStorageError(e.message)
+      }
     }
     resetProgressState()
     setScreen('session')
@@ -135,28 +179,40 @@ export default function App() {
 
   // Called from within an active VoiceSession, which ends its own call
   // before invoking these — App just needs to persist state and navigate.
-  function handlePause() {
-    const saved = saveRecipeProgress(recipe, { mode, cookingStepIndex, shoppingConfirmations })
-    refreshSavedRecipes()
-    setRecipe(saved)
+  // Navigation happens regardless of whether the write succeeds: someone
+  // leaving a session should never be held there by a storage error.
+  async function handlePause() {
+    try {
+      setRecipe(await saveRecipeProgress(recipe, { mode, cookingStepIndex, shoppingConfirmations }))
+      await refreshSavedRecipes()
+    } catch (e) {
+      setStorageError(e.message)
+    }
     resetProgressState()
     setScreen('input')
   }
 
-  function handleFinish() {
+  async function handleFinish() {
     if (recipe.id) {
-      clearRecipeProgress(recipe.id)
-      refreshSavedRecipes()
+      try {
+        await clearRecipeProgress(recipe.id)
+        await refreshSavedRecipes()
+      } catch (e) {
+        setStorageError(e.message)
+      }
     }
     resetProgressState()
     setRecipe(null)
     setScreen('input')
   }
 
-  function handleSaveAndEnd() {
-    const saved = saveRecipe(recipe)
-    refreshSavedRecipes()
-    setRecipe(saved)
+  async function handleSaveAndEnd() {
+    try {
+      setRecipe(await saveRecipe(recipe))
+      await refreshSavedRecipes()
+    } catch (e) {
+      setStorageError(e.message)
+    }
     resetProgressState()
     setScreen('input')
   }
@@ -191,15 +247,21 @@ export default function App() {
     return (
       <RecipeLibrary
         recipes={savedRecipes}
+        user={user}
+        storageError={storageError}
         onSelect={handleSelectSaved}
         onRemove={handleRemoveSaved}
         onBack={() => setScreen('input')}
+        onSignIn={() => setScreen('auth')}
+        onSignedOut={() => refreshSavedRecipes()}
       />
     )
   }
 
   if (screen === 'auth') {
-    return <AuthScreen onBack={() => setScreen('input')} />
+    // Signing in returns you to the library, where the newly synced recipes
+    // (including any just claimed off this device) are the thing to see.
+    return <AuthScreen onBack={() => setScreen('input')} onSignedIn={() => setScreen('library')} />
   }
 
   if (screen === 'confirm' && recipe) {

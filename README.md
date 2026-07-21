@@ -25,8 +25,14 @@ Three pieces:
    live ingredient checklist; Cooking renders the current step plus a
    transcript.
 
-Sessions can be paused and resumed at the exact step. Recipes are saved to
-`localStorage` (`remy:savedRecipes`); there are no accounts yet.
+Sessions can be paused and resumed at the exact step.
+
+**Accounts are optional.** You can cook as a guest with recipes saved to
+`localStorage`, and signing in only adds cross-device sync. Both are live
+paths, not a migration half-state — the storage layer dispatches on session,
+and the app works fully with Supabase unconfigured. On first sign-in, any
+recipes already on the device are claimed into the account so nothing appears
+to vanish.
 
 ## Running it
 
@@ -45,11 +51,39 @@ Environment (`.env.local`):
 VITE_ELEVENLABS_AGENT_ID=   # public agent id, safe in the client bundle
 ANTHROPIC_API_KEY=          # server-only
 SPOONACULAR_API_KEY=        # server-only
+
+# Optional — omit these and the app runs in guest mode with no accounts
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
 ```
 
 **Gotcha:** `vercel dev`'s function runtime reads `.env`, not `.env.local`.
 Keep the two server keys in both, or the API routes will report a missing key
 while the app itself looks fine.
+
+## Accounts (Supabase)
+
+Entirely optional — skip this and Remy works as a guest-only app.
+
+1. Create a project at [supabase.com](https://supabase.com). From
+   **Settings → API**, copy the Project URL and the `anon` public key into
+   `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`. The anon key is meant to be
+   public: it identifies the project, it doesn't grant access.
+2. **SQL Editor → New query**, paste [`supabase/schema.sql`](supabase/schema.sql),
+   and run it. This creates the `recipes` table *and* its row-level security
+   policies. Don't skip the RLS half — the browser talks to Postgres directly,
+   so those policies are the only thing separating one account's recipes from
+   another's.
+3. For Google sign-in: **Authentication → Providers → Google**, and supply a
+   client ID/secret from a Google Cloud OAuth consent screen. Email/password
+   and magic links work out of the box with no extra setup.
+4. **Authentication → URL Configuration**: add your deployed origin (and
+   `http://localhost:3000`) to the redirect allow-list, or OAuth and magic
+   links will bounce.
+
+Sign in with Apple is on the designed screens but not implemented — it
+requires a paid Apple Developer account ($99/yr) for the web Services ID, so
+the button is left out rather than shipped broken.
 
 ## The ElevenLabs agent
 
@@ -110,14 +144,14 @@ both voice sessions, pause-resume, and the saved-recipe library.
 
 Known gaps, roughly in priority order:
 
-- **No accounts.** Recipes are per-device. Real auth means picking a
-  provider, adding a database, and migrating `localStorage` to per-user
-  storage. `AuthScreen` exists as UI only and is wired to nothing — reachable
-  at `/#auth` for demos.
+- **Accounts are built but unverified end-to-end.** The guest path is
+  tested; the signed-in path needs a real Supabase project to exercise
+  (sign-in, sync, and the first-sign-in claim of on-device recipes).
 - **URL-extracted recipes have no image.** Only Spoonacular supplies one.
   Most recipe pages expose `og:image`, and `/api/extract-recipe` already has
-  the HTML in hand, so this is a small addition. Until then those recipes use
-  the striped placeholder, which is the design's own no-image treatment.
+  the HTML in hand, so this is a small addition. It isn't visually broken
+  meanwhile — library thumbnails sit on the right precisely so they can be
+  absent without disturbing the row.
 - **Design fidelity is partially verified.** Landing, both confirm and
   session modes, library, search, loading, wrap-up and welcome 1–2 have been
   compared against the rendered prototype. Auth, camera, connecting,
