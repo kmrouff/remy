@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { searchRecipes, getRecipeDetails } from '../lib/recipes'
+import RecipeThumb from './RecipeThumb'
 
 function formatMeta(result) {
   const parts = []
@@ -85,11 +86,7 @@ export default function RecipeSearch({ onSelect, onCancel }) {
                   onClick={() => handleSelect(r.id)}
                   disabled={status === 'loading'}
                 >
-                  {r.image ? (
-                    <img src={r.image} alt="" className="recipe-search__thumb" />
-                  ) : (
-                    <span className="recipe-search__thumb" aria-hidden="true" />
-                  )}
+                  <RecipeThumb recipe={r} base="recipe-search__thumb" />
                   <span className="recipe-search__result-info">
                     <span className="recipe-search__result-title">{r.title}</span>
                     <span className="recipe-search__result-meta">

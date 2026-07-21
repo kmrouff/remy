@@ -466,11 +466,19 @@
 .recipe-library__item { display: flex; align-items: center; gap: 14px; padding: 16px;
   border: 1px solid var(--hairline); border-radius: 16px; background: var(--surface); }
 .recipe-library__thumb { width: 52px; height: 52px; border-radius: 11px; flex-shrink: 0; object-fit: cover; background: var(--surface-2); }
-/* recipes extracted from a URL/photo often have no image — the design uses a
-   quiet striped placeholder rather than an empty box */
-span.recipe-library__thumb, span.recipe-search__thumb {
-  background: repeating-linear-gradient(135deg, var(--hairline) 0 7px, var(--surface-2) 7px 14px);
+/* No-image fallback. The prototype's diagonal stripes were a mockup stand-in
+   for photography (its search rows literally read "img"), not a shipped empty
+   state — and most recipes here have no image, so it would have been the
+   dominant look. A serif initial on a soft tile holds the row's alignment and
+   reads as intentional. */
+.recipe-library__thumb--empty, .recipe-search__thumb--empty {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); border: 1px solid var(--hairline);
+  font-family: var(--serif); font-weight: 500; color: var(--decor);
+  line-height: 1; user-select: none;
 }
+.recipe-library__thumb--empty { font-size: 22px; }
+.recipe-search__thumb--empty { font-size: 23px; }
 .recipe-library__item-button { flex: 1; min-width: 0; display: flex; flex-direction: column;
   align-items: flex-start; gap: 5px; border: none; background: transparent; text-align: left; padding: 0; }
 .recipe-library__item-title { font-family: var(--serif); font-size: 19px; color: var(--ink); line-height: 1.24; }

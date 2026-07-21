@@ -1,3 +1,5 @@
+import RecipeThumb from './RecipeThumb'
+
 export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
   return (
     <main className="recipe-library">
@@ -18,11 +20,7 @@ export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
           <ul className="recipe-library__list">
             {recipes.map((recipe) => (
               <li key={recipe.id} className="recipe-library__item">
-                {recipe.image ? (
-                  <img src={recipe.image} alt="" className="recipe-library__thumb" />
-                ) : (
-                  <span className="recipe-library__thumb" aria-hidden="true" />
-                )}
+                <RecipeThumb recipe={recipe} base="recipe-library__thumb" />
                 <button type="button" className="recipe-library__item-button" onClick={() => onSelect(recipe)}>
                   <span className="recipe-library__item-title">{recipe.title}</span>
                   <span className="recipe-library__item-meta">
