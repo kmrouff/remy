@@ -139,8 +139,19 @@ export default function App() {
   }
 
   function handleBackToRecipe() {
-    resetProgressState()
+    // Deliberately does NOT reset progress — leaving mid-session (as
+    // opposed to Pause, which persists to storage) should still show
+    // whatever was sorted/cooked so far on the confirm screen, not wipe it.
     setScreen('confirm')
+  }
+
+  // Ends the shopping session and starts a fresh cooking one for the same
+  // recipe, in-flight, without a detour through the confirm screen. Mode
+  // can't be switched mid-call (the agent's tools are scoped per session),
+  // so this is the actual mechanism — see VoiceSession's wrap-up sheet.
+  function handleSwitchToCooking() {
+    setMode('cooking')
+    setSessionKey((k) => k + 1)
   }
 
   function handleRetry() {
@@ -259,6 +270,7 @@ export default function App() {
         onSaveAndEnd={handleSaveAndEnd}
         onRetry={handleRetry}
         onBack={handleBackToRecipe}
+        onSwitchToCooking={handleSwitchToCooking}
       />
     )
   }
@@ -288,6 +300,10 @@ export default function App() {
     const isSaved = Boolean(recipe.id) && savedRecipes.some((r) => r.id === recipe.id)
     const progress = recipe.progress
     const pitch = PITCH[mode](recipe)
+    // Live, in-memory progress from a session left via the back button
+    // (distinct from `progress`, which only exists once formally paused —
+    // see handleBackToRecipe's comment on why this isn't cleared on exit).
+    const liveSortedCount = recipe.ingredients.filter((ing) => shoppingConfirmations[ing.item]).length
 
     return (
       <main className={`app-screen theme-${mode}`}>
@@ -352,6 +368,12 @@ export default function App() {
                 {recipe.ingredients.length} ingredients · {recipe.steps.length} steps
               </div>
             </div>
+            {liveSortedCount > 0 && (
+              <div className="confirm__live-progress">
+                <span className="dot" aria-hidden="true" />
+                {liveSortedCount} of {recipe.ingredients.length} ingredients already sorted this session
+              </div>
+            )}
             <div className="confirm__pitch">
               <div className="confirm__pitch-quote">"{pitch.quote}"</div>
               <div className="confirm__pitch-note">{pitch.note}</div>

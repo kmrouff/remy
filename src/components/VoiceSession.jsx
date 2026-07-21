@@ -8,7 +8,7 @@ const AGENT_ID = import.meta.env.VITE_ELEVENLABS_AGENT_ID
 // knows which mode was picked on the confirm screen.
 const MODE_CONTEXT = {
   shopping:
-    "The user has switched to Shopping mode. Focus on helping them gather ingredients: what they already have, what they're looking at in the store or pantry, and how much/many they need for this recipe. Use get_shopping_list to check status and confirm_ingredient to record what they find, substitute, or are missing.",
+    "The user has switched to Shopping mode. Start by asking whether they're already at the store (real-time — go item by item, they can't fully verify what's at home) or still at home planning (broader — checking what they already have on hand). Use get_shopping_list to check status and confirm_ingredient to record what they find, substitute, or are missing. When something's unavailable, don't ask open-endedly what they want instead — suggest one specific, sensible substitute right away based on common cooking knowledge, and confirm it works for them. When they have some of an item but aren't sure it's enough, use your judgment on whether that's probably sufficient for this recipe and say so plainly; once they agree it's enough, just acknowledge it and move on rather than re-asking. Once everything's been gone through, tell them shopping's done — you can't switch them into Cooking mode yourself mid-call, so point them to the 'Done shopping' option to continue there, rather than trying to start reading recipe steps.",
   cooking:
     "The user has switched to Cooking mode. Don't jump straight into step one. First, ease them in: ask if their ingredients are prepped and ready (mention anything the early steps specifically call for pre-cutting, peeling, or measuring, if the recipe has that), and whether they've got out the tools/cookware the recipe needs (pans, pots, a cutting board, etc. — infer these from the steps, don't ask generically). Once they confirm they're set, use get_next_step to begin, then guide them through cook times, technique adjustments, and real-time ingredient swaps if something is missing. Keep the pace relaxed and conversational at the start, not mechanical.",
 }
@@ -18,7 +18,7 @@ const MODE_CONTEXT = {
 // overrides are enabled for the agent in the ElevenLabs dashboard.
 const FIRST_MESSAGE = {
   shopping:
-    "Hey, I'm Remy, your invisible sous chef. Let's get your ingredients sorted — tell me what you've already got, or what you're looking at right now, and I'll help you track down the rest.",
+    "Hey, I'm Remy, your invisible sous chef. Quick thing first — are you already at the store, or still planning from home? That changes how I help you go through the list.",
   cooking:
     "Hey, I'm Remy, your invisible sous chef, ready to guide you through this recipe hands-free. Just say the word whenever you want your first step.",
 }
@@ -48,6 +48,7 @@ export default function VoiceSession({
   onSaveAndEnd,
   onRetry,
   onBack,
+  onSwitchToCooking,
 }) {
   const [status, setStatus] = useState('connecting') // disconnected | connecting | connected | disconnecting
   const [agentMode, setAgentMode] = useState('listening') // listening | speaking
@@ -98,7 +99,14 @@ export default function VoiceSession({
           return 'ok'
         },
         get_next_step: async () => {
-          const { recipe, cookingStepIndex } = stateRef.current
+          const { recipe, cookingStepIndex, mode } = stateRef.current
+          // Mode can't change mid-call — the screen stays on the shopping
+          // checklist regardless of what gets said, so reading a step here
+          // would narrate a UI the user isn't looking at. Refuse instead of
+          // relying on the prompt alone to avoid this.
+          if (mode !== 'cooking') {
+            return "not available — still in Shopping mode. If the user is done shopping, tell them to use the 'Done shopping' option to move to Cooking; don't describe recipe steps yet."
+          }
           const step = recipe.steps[cookingStepIndex]
           if (step) {
             setCookingStepIndex((i) => i + 1)
@@ -409,7 +417,23 @@ export default function VoiceSession({
                 ? `You're on step ${Math.min(cookingStepIndex + 1, recipe.steps.length)} of ${recipe.steps.length}. Nothing's lost either way.`
                 : "Nothing's lost either way."}
             </div>
-            <button type="button" className="wrap-up__opt wrap-up__opt--primary" onClick={() => endThenRun(onPause)}>
+            {mode === 'shopping' && (
+              <button type="button" className="wrap-up__opt wrap-up__opt--primary" onClick={() => endThenRun(onSwitchToCooking)}>
+                <span className="wrap-up__opt-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="M13 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span>
+                  <span className="wrap-up__opt-title">Done shopping — start cooking</span>
+                  <span className="wrap-up__opt-note">
+                    {toGo > 0 ? `${toGo} item${toGo === 1 ? '' : 's'} still unsorted` : 'Everything sorted — head to the stove'}
+                  </span>
+                </span>
+              </button>
+            )}
+            <button type="button" className={`wrap-up__opt${mode === 'cooking' ? ' wrap-up__opt--primary' : ''}`} onClick={() => endThenRun(onPause)}>
               <span className="wrap-up__opt-icon">
                 <span className="pause-bars" aria-hidden="true">
                   <span />

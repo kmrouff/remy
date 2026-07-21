@@ -285,6 +285,12 @@
 .resume__headline { font-family: var(--serif); font-size: 22px; line-height: 1.3; color: var(--mode-ink); margin-bottom: 6px; }
 .resume__excerpt { font-size: 14.5px; line-height: 1.55; color: color-mix(in srgb, var(--mode-ink) 65%, transparent); margin-bottom: 20px; }
 .resume__progress { display: flex; gap: 6px; }
+
+.confirm__live-progress {
+  display: flex; align-items: center; gap: 8px; margin: 4px 0 18px;
+  font: 600 12.5px/1 var(--sans); color: var(--mode-deep);
+}
+.confirm__live-progress .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mode); flex-shrink: 0; }
 .resume__progress span { flex: 1; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--mode-deep) 18%, transparent); }
 .resume__progress span.done { background: var(--mode); }
 
