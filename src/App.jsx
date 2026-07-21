@@ -389,17 +389,15 @@ export default function App() {
     <>
       <main className={`landing${justOnboarded ? ' is-entering' : ''}`}>
         <div className="landing__brand">
-          <span className="landing__brand-lockup">
-            <button
-              type="button"
-              className={`landing__mark-btn${markPulsing ? ' is-pulsing' : ''}`}
-              onClick={handleOpenMenu}
-              aria-label="Open menu"
-            >
-              <img src={remyMark} alt="" />
-            </button>
+          <button
+            type="button"
+            className={`landing__brand-lockup${markPulsing ? ' is-pulsing' : ''}`}
+            onClick={handleOpenMenu}
+            aria-label="Open menu"
+          >
+            <img src={remyMark} alt="" />
             <span className="wordmark">Remy</span>
-          </span>
+          </button>
           <button type="button" className="landing__saved-link" onClick={() => setScreen('library')}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
               <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />

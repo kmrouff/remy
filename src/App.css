@@ -57,10 +57,12 @@
   padding: 32px 24px; background: var(--paper);
 }
 .landing__brand { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; }
-.landing__brand-lockup { display: flex; align-items: center; gap: 9px; }
-.landing__mark-btn { border: none; background: transparent; padding: 0; line-height: 0; cursor: pointer; }
-.landing__mark-btn img { height: 36px; width: auto; }
-.landing__mark-btn.is-pulsing img { animation: markWiggle 0.5s ease; }
+.landing__brand-lockup { display: flex; align-items: center; gap: 9px; border: none; background: transparent; padding: 0; cursor: pointer; }
+.landing__brand-lockup img { height: 36px; width: auto; }
+.landing__brand-lockup.is-pulsing img { animation: markWiggle 0.5s ease; }
+/* the serif wordmark's cap-height sits visually high next to the icon's
+   optical centre — nudge it down a touch rather than trusting align-items */
+.landing__brand-lockup .wordmark { margin-top: 3px; }
 @keyframes markWiggle {
   0%, 100% { transform: rotate(0deg); }
   25% { transform: rotate(-8deg); }

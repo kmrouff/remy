@@ -144,7 +144,7 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
       <input
         type="url"
         inputMode="url"
-        placeholder="Paste a recipe link…"
+        placeholder="Paste a recipe link (URL)…"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         className="recipe-input__field"
