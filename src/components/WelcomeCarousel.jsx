@@ -96,8 +96,8 @@ const CARDS = [
     ),
   },
   {
-    title: 'Go put it to use',
-    text: "I hope this makes shopping and cooking a little bit easier. Remy is built, run, and paid for by one person, not a company — if you ever want to chip in, there's a link in the menu. For now, go cook something good.",
+    title: 'I hope you enjoy it',
+    text: "Made and run by just one person, not a company. If it makes cooking a little easier, that's all I wanted — there's a way to say thanks in the menu, whenever you feel like it.",
     diagram: (
       <div className="welcome__brand">
         <img src={remyMark} alt="" className="welcome__mark" />
