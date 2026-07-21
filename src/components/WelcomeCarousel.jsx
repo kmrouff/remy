@@ -7,9 +7,7 @@ const CARDS = [
     title: 'Cook with your hands full',
     text: "Remy is your invisible sous-chef. Talk to it out loud while you cook or shop — it reads the steps, tracks your ingredients, and never needs a tap.",
     diagram: (
-      <div className="welcome__rings">
-        <span className="welcome__ring" />
-        <span className="welcome__ring welcome__ring--inner" />
+      <div className="welcome__brand">
         <img src={remyMark} alt="" className="welcome__mark" />
       </div>
     ),

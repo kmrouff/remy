@@ -65,10 +65,19 @@ while the app itself looks fine.
 
 Entirely optional — skip this and Remy works as a guest-only app.
 
-1. Create a project at [supabase.com](https://supabase.com). From
-   **Settings → API**, copy the Project URL and the `anon` public key into
-   `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`. The anon key is meant to be
-   public: it identifies the project, it doesn't grant access.
+1. Create a project at [supabase.com](https://supabase.com), then fill in
+   `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`:
+   - **URL** — **Settings → General**, directly under the project title. (It's
+     also `https://<project-ref>.supabase.co`, where the ref is the last
+     segment of the dashboard address.) The green *Connect* dialog buries it
+     under a framework picker that defaults to Next.js — ignore that, and
+     don't use its "Copy prompt": this is a Vite SPA, not App Router.
+   - **Key** — **Settings → API Keys**. Use the *publishable* key
+     (`sb_publishable_…`, or a legacy `anon` JWT). Never the `sb_secret_…`
+     one: that bypasses row-level security and must not reach the browser.
+
+   The publishable key is meant to be public — it identifies the project, it
+   doesn't grant access.
 2. **SQL Editor → New query**, paste [`supabase/schema.sql`](supabase/schema.sql),
    and run it. This creates the `recipes` table *and* its row-level security
    policies. Don't skip the RLS half — the browser talks to Postgres directly,
@@ -144,9 +153,12 @@ both voice sessions, pause-resume, and the saved-recipe library.
 
 Known gaps, roughly in priority order:
 
-- **Accounts are built but unverified end-to-end.** The guest path is
-  tested; the signed-in path needs a real Supabase project to exercise
-  (sign-in, sync, and the first-sign-in claim of on-device recipes).
+- **Accounts work end-to-end**, verified against a real Supabase project:
+  sign-up, email confirmation, sign-in, the first-sign-in claim of
+  on-device recipes into the account, sign-out, and sign-back-in pulling
+  from Postgres rather than localStorage. Not yet set on Vercel's
+  production environment, so the deployed site still runs guest-only
+  until those env vars are added there too.
 - **URL-extracted recipes have no image.** Only Spoonacular supplies one.
   Most recipe pages expose `og:image`, and `/api/extract-recipe` already has
   the HTML in hand, so this is a small addition. It isn't visually broken

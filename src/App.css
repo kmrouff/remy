@@ -538,7 +538,7 @@
 .welcome__body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .welcome__diagram { margin-bottom: 36px; }
 .welcome__eyebrow { font: 600 11px/1 var(--sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
-.welcome__title { font-family: var(--serif); font-weight: 500; font-size: 29px; line-height: 1.16; letter-spacing: -0.4px; color: var(--ink); margin: 0 0 12px; max-width: 300px; }
+.welcome__title { font-family: var(--serif); font-weight: 500; font-size: 29px; line-height: 1.16; letter-spacing: -0.4px; color: var(--ink); margin: 0 0 12px; max-width: 300px; text-wrap: balance; }
 .welcome__text { color: var(--muted); font-size: 15px; line-height: 1.55; margin: 0; max-width: 296px; }
 .welcome__foot { display: flex; align-items: center; justify-content: space-between; }
 .welcome__dots { display: flex; gap: 6px; }
@@ -547,11 +547,9 @@
 .welcome__next { padding: 13px 28px; border: none; border-radius: 12px; background: var(--ink); color: var(--paper); font: 600 15px/1 var(--sans); }
 .welcome__next--sage { background: var(--sage); color: #F7FAF6; box-shadow: 0 8px 18px rgba(92,117,99,0.28); }
 
-/* card 1: rings */
-.welcome__rings { position: relative; width: 196px; height: 196px; }
-.welcome__ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--hairline-strong); }
-.welcome__ring--inner { inset: 34px; border-color: var(--hairline); }
-.welcome__mark { position: absolute; inset: 0; margin: auto; height: 104px; width: auto; }
+/* card 1: brand mark */
+.welcome__brand { display: flex; align-items: center; justify-content: center; height: 196px; }
+.welcome__mark { height: 104px; width: auto; }
 
 /* card 2: sources -> recipe card */
 .welcome__sources { display: flex; align-items: center; gap: 18px; }
