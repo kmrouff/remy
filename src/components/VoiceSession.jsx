@@ -67,6 +67,20 @@ export default function VoiceSession({
   // once at startSession time) never read stale values.
   const stateRef = useRef({ recipe, cookingStepIndex, shoppingConfirmations, mode })
   stateRef.current = { recipe, cookingStepIndex, shoppingConfirmations, mode }
+  // Set right before *we* deliberately end the call (back button, wrap-up
+  // actions), so the effect below can tell that apart from the agent (or
+  // the network) ending it on its own.
+  const intentionalDisconnectRef = useRef(false)
+
+  // A disconnect we didn't initiate — the agent's own end-call tool, or a
+  // dropped connection — would otherwise leave the last screen frozen on
+  // screen with no indication the call is over and no chance to save
+  // progress. Surface the same wrap-up choice used for a deliberate exit.
+  useEffect(() => {
+    if (status === 'disconnected' && !error && !intentionalDisconnectRef.current) {
+      setShowWrapUp(true)
+    }
+  }, [status, error])
 
   function appendLog(entry) {
     setLog((prev) => [...prev.slice(-19), entry])
@@ -172,17 +186,20 @@ export default function VoiceSession({
   }, [])
 
   async function handleChangeMode() {
+    intentionalDisconnectRef.current = true
     setStatus('disconnecting')
     await conversationRef.current?.endSession()
     onBack()
   }
 
   async function handleCancelConnecting() {
+    intentionalDisconnectRef.current = true
     await conversationRef.current?.endSession()
     onBack()
   }
 
   async function endThenRun(action) {
+    intentionalDisconnectRef.current = true
     setShowWrapUp(false)
     setStatus('disconnecting')
     await conversationRef.current?.endSession()
