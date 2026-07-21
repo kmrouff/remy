@@ -72,6 +72,16 @@ export default function App() {
   const [storageError, setStorageError] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [markPulsing, setMarkPulsing] = useState(false)
+  const [justOnboarded, setJustOnboarded] = useState(false)
+
+  // Only the arrival right after onboarding gets the entrance animation —
+  // it's a one-time "you made it" beat, not something to replay every time
+  // someone lands back here mid-session.
+  useEffect(() => {
+    if (!justOnboarded) return
+    const t = setTimeout(() => setJustOnboarded(false), 1200)
+    return () => clearTimeout(t)
+  }, [justOnboarded])
 
   function handleOpenMenu() {
     setMenuOpen(true)
@@ -84,6 +94,7 @@ export default function App() {
   function handleWelcomeDone() {
     localStorage.setItem('remy:hasSeenWelcome', 'true')
     setHasSeenWelcome(true)
+    setJustOnboarded(true)
   }
 
   const refreshSavedRecipes = useCallback(async () => {
@@ -376,7 +387,7 @@ export default function App() {
 
   return (
     <>
-      <main className="landing">
+      <main className={`landing${justOnboarded ? ' is-entering' : ''}`}>
         <div className="landing__brand">
           <span className="landing__brand-lockup">
             <button
@@ -397,7 +408,6 @@ export default function App() {
             {savedRecipes.length > 0 && <span>{savedRecipes.length}</span>}
           </button>
         </div>
-        <div className="eyebrow">Invisible sous-chef</div>
         <h1>
           What are we
           <br />

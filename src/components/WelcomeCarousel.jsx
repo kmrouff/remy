@@ -42,7 +42,7 @@ const CARDS = [
   },
   {
     title: 'Pick a mode',
-    text: "Shopping gathers your ingredients; Cooking guides you step by step. The whole app takes on that mode's calm colour.",
+    text: 'Shopping gathers your ingredients; Cooking guides you step by step.',
     diagram: (
       <div className="welcome__modes">
         <div className="welcome__mode-card welcome__mode-card--shopping">
@@ -99,7 +99,7 @@ const CARDS = [
     title: 'I hope you enjoy it',
     text: "Made and run by just one person, not a company. If it makes cooking a little easier, that's all I wanted — there's a way to say thanks in the menu, whenever you feel like it.",
     diagram: (
-      <div className="welcome__brand">
+      <div className="welcome__brand welcome__brand--close">
         <img src={remyMark} alt="" className="welcome__mark" />
       </div>
     ),
@@ -108,21 +108,27 @@ const CARDS = [
 
 export default function WelcomeCarousel({ onDone }) {
   const [index, setIndex] = useState(0)
+  const isFirst = index === 0
   const isLast = index === CARDS.length - 1
   const card = CARDS[index]
 
   return (
     <div className="welcome">
-      <div className={`welcome__top${isLast ? ' has-back' : ''}`}>
-        {isLast ? (
-          <button type="button" className="iconbtn" onClick={() => setIndex((i) => i - 1)} aria-label="Back">
-            ‹
-          </button>
-        ) : (
-          <button type="button" className="welcome__skip" onClick={onDone}>
-            Skip
-          </button>
-        )}
+      <div className="welcome__top">
+        <div className="welcome__top-slot">
+          {!isFirst && (
+            <button type="button" className="iconbtn" onClick={() => setIndex((i) => i - 1)} aria-label="Back">
+              ‹
+            </button>
+          )}
+        </div>
+        <div className="welcome__top-slot">
+          {!isLast && (
+            <button type="button" className="welcome__skip" onClick={onDone}>
+              Skip
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="welcome__body">

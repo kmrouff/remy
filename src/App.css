@@ -42,7 +42,7 @@
   display: flex; align-items: center; justify-content: center;
 }
 .eyebrow { font: 600 11px/1 var(--sans); letter-spacing: 1.6px; text-transform: uppercase; color: var(--faint); }
-.wordmark { font-family: var(--serif); font-weight: 500; font-size: 26px; color: var(--ink); }
+.wordmark { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--ink); }
 
 /* ============ LANDING / INPUT ============ */
 .landing {
@@ -64,6 +64,21 @@
   display: flex; align-items: center; gap: 7px; padding: 8px 14px;
   border: 1px solid var(--hairline); border-radius: 999px; background: var(--surface);
   color: var(--ink-soft); font: 600 13px/1 var(--sans);
+}
+
+/* Entrance, arrival-from-onboarding only (App.jsx clears the flag shortly
+   after mount) — not something that replays on every return to landing. */
+@keyframes landingFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.landing.is-entering .landing__brand,
+.landing.is-entering h1 {
+  animation: landingFadeIn 0.5s ease both;
+}
+.landing.is-entering .recipe-input {
+  animation: landingFadeIn 0.5s ease both;
+  animation-delay: 0.28s;
 }
 .landing__saved-link span {
   display: inline-flex; align-items: center; justify-content: center;
@@ -540,14 +555,14 @@
   flex: 1; min-height: 100dvh; display: flex; flex-direction: column;
   padding: 32px 26px; background: var(--paper);
 }
-.welcome__top { display: flex; justify-content: flex-end; }
-.welcome__top.has-back { justify-content: flex-start; }
+.welcome__top { display: flex; justify-content: space-between; align-items: center; }
+.welcome__top-slot { display: flex; align-items: center; min-height: 38px; }
 .welcome__skip { border: none; background: transparent; color: var(--faint); font: 600 14px/1 var(--sans); padding: 6px; }
 .welcome__body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .welcome__diagram { margin-bottom: 36px; }
 .welcome__eyebrow { font: 600 11px/1 var(--sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
 .welcome__title { font-family: var(--serif); font-weight: 500; font-size: 29px; line-height: 1.16; letter-spacing: -0.4px; color: var(--ink); margin: 0 0 12px; max-width: 300px; text-wrap: balance; }
-.welcome__text { color: var(--muted); font-size: 15px; line-height: 1.55; margin: 0; max-width: 296px; }
+.welcome__text { color: var(--muted); font-size: 15px; line-height: 1.55; margin: 0; max-width: 296px; text-wrap: balance; }
 .welcome__foot { display: flex; align-items: center; justify-content: space-between; }
 .welcome__dots { display: flex; gap: 6px; }
 .welcome__dots span { width: 7px; height: 7px; border-radius: 4px; background: var(--hairline-strong); }
@@ -557,6 +572,8 @@
 
 /* card 1: brand mark */
 .welcome__brand { display: flex; align-items: center; justify-content: center; height: 196px; }
+.welcome__brand--close { height: 120px; }
+.welcome__brand--close .welcome__mark { height: 76px; }
 .welcome__mark { height: 104px; width: auto; }
 
 /* card 2: sources -> recipe card */
@@ -636,7 +653,9 @@
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 16px; border-bottom: 1px solid var(--hairline); flex-shrink: 0;
 }
-.app-menu__title { font-family: var(--serif); font-size: 19px; color: var(--ink); }
+.app-menu__brand { display: flex; flex-direction: column; gap: 3px; }
+.app-menu__brand-name { font-family: var(--serif); font-weight: 400; font-size: 19px; color: var(--ink); }
+.app-menu__brand-tag { font: 600 10px/1 var(--sans); letter-spacing: 1.4px; text-transform: uppercase; color: var(--faint); }
 .app-menu__close {
   width: 38px; height: 38px; flex-shrink: 0; border: none; background: transparent;
   color: var(--ink); font-size: 22px; line-height: 1;

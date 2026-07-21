@@ -54,8 +54,6 @@ export default function AppMenu({ open, onClose }) {
     return () => window.removeEventListener('keydown', handleKey)
   }, [open, onClose])
 
-  const title = { menu: 'Menu', mission: 'Mission', faq: 'FAQ', contact: 'Contact' }[view]
-
   return (
     <>
       <button
@@ -68,7 +66,10 @@ export default function AppMenu({ open, onClose }) {
       <div className={`app-menu${open ? ' is-open' : ''}`} aria-hidden={!open}>
         <div className="app-menu__head">
           {view === 'menu' ? (
-            <span className="app-menu__title">{title}</span>
+            <span className="app-menu__brand">
+              <span className="app-menu__brand-name">Remy</span>
+              <span className="app-menu__brand-tag">Invisible sous-chef</span>
+            </span>
           ) : (
             <button type="button" className="iconbtn" onClick={() => setView('menu')} aria-label="Back to menu">
               ‹
