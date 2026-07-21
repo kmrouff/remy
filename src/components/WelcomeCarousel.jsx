@@ -62,7 +62,7 @@ const CARDS = [
   },
   {
     title: 'Then just talk',
-    text: "It's a conversation — completely hands-free. As you shop or cook, talk to Remy the way you would a friend in the kitchen: what you're doing, what you're swapping, what you can't find. It listens and keeps everything on track, so your hands never leave the food.",
+    text: "It's a conversation — completely hands-free. Talk to Remy like a friend in the kitchen: what you're doing, what you're swapping, what you can't find. And when things go quiet — chopping, simmering, wandering the aisles — Remy waits. Just say “Remy” to bring it back; it won't butt in on talk that isn't for it.",
     diagram: (
       <div className="welcome__chat">
         <div className="welcome__chat-bubble welcome__chat-bubble--agent">

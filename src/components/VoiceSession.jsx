@@ -21,9 +21,9 @@ const MODE_CONTEXT = {
 // overrides are enabled for the agent in the ElevenLabs dashboard.
 const FIRST_MESSAGE = {
   shopping:
-    "Hey, I'm Remy, your invisible sous chef. Quick thing first — are you already at the store, or still planning from home? That changes how I help you go through the list.",
+    "Hey, I'm Remy, your invisible sous chef. Quick thing first — are you already at the store, or still planning from home? And whenever it goes quiet, just say my name to bring me back — I'll stay out of anything that's not meant for me.",
   cooking:
-    "Hey, I'm Remy, your invisible sous chef, ready to guide you through this recipe hands-free. Just say the word whenever you want your first step.",
+    "Hey, I'm Remy, ready to guide you through this hands-free. Take your time getting set up — I'll wait quietly, just say 'Remy' when you want to start.",
 }
 
 function formatQty(ing) {
