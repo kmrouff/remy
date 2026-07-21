@@ -5,6 +5,7 @@ import RecipeInput from './components/RecipeInput'
 import RecipeLibrary from './components/RecipeLibrary'
 import WelcomeCarousel from './components/WelcomeCarousel'
 import AuthScreen from './components/AuthScreen'
+import AppMenu from './components/AppMenu'
 import { useSession } from './lib/auth'
 import {
   getSavedRecipes,
@@ -69,6 +70,14 @@ export default function App() {
   const [sessionKey, setSessionKey] = useState(0)
   const [hasSeenWelcome, setHasSeenWelcome] = useState(() => localStorage.getItem('remy:hasSeenWelcome') === 'true')
   const [storageError, setStorageError] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [markPulsing, setMarkPulsing] = useState(false)
+
+  function handleOpenMenu() {
+    setMenuOpen(true)
+    setMarkPulsing(true)
+    setTimeout(() => setMarkPulsing(false), 500)
+  }
 
   const { user, loading: sessionLoading } = useSession()
 
@@ -366,27 +375,37 @@ export default function App() {
   }
 
   return (
-    <main className="landing">
-      <div className="landing__brand">
-        <span className="landing__brand-lockup">
-          <img src={remyMark} alt="Remy" />
-          <span className="wordmark">Remy</span>
-        </span>
-        <button type="button" className="landing__saved-link" onClick={() => setScreen('library')}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-            <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
-          </svg>
-          My recipes
-          {savedRecipes.length > 0 && <span>{savedRecipes.length}</span>}
-        </button>
-      </div>
-      <div className="eyebrow">Invisible sous-chef</div>
-      <h1>
-        What are we
-        <br />
-        making today?
-      </h1>
-      <RecipeInput onExtracted={handleExtracted} onUseSample={() => handleExtracted(SAMPLE_RECIPE)} />
-    </main>
+    <>
+      <main className="landing">
+        <div className="landing__brand">
+          <span className="landing__brand-lockup">
+            <button
+              type="button"
+              className={`landing__mark-btn${markPulsing ? ' is-pulsing' : ''}`}
+              onClick={handleOpenMenu}
+              aria-label="Open menu"
+            >
+              <img src={remyMark} alt="" />
+            </button>
+            <span className="wordmark">Remy</span>
+          </span>
+          <button type="button" className="landing__saved-link" onClick={() => setScreen('library')}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+              <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+            </svg>
+            My recipes
+            {savedRecipes.length > 0 && <span>{savedRecipes.length}</span>}
+          </button>
+        </div>
+        <div className="eyebrow">Invisible sous-chef</div>
+        <h1>
+          What are we
+          <br />
+          making today?
+        </h1>
+        <RecipeInput onExtracted={handleExtracted} onUseSample={() => handleExtracted(SAMPLE_RECIPE)} />
+      </main>
+      <AppMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+    </>
   )
 }

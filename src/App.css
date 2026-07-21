@@ -51,7 +51,15 @@
 }
 .landing__brand { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; }
 .landing__brand-lockup { display: flex; align-items: center; gap: 9px; }
-.landing__brand-lockup img { height: 36px; width: auto; }
+.landing__mark-btn { border: none; background: transparent; padding: 0; line-height: 0; cursor: pointer; }
+.landing__mark-btn img { height: 36px; width: auto; }
+.landing__mark-btn.is-pulsing img { animation: markWiggle 0.5s ease; }
+@keyframes markWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  60% { transform: rotate(6deg); }
+  85% { transform: rotate(-2deg); }
+}
 .landing__saved-link {
   display: flex; align-items: center; gap: 7px; padding: 8px 14px;
   border: 1px solid var(--hairline); border-radius: 999px; background: var(--surface);
@@ -602,3 +610,51 @@
 .welcome__pause-progress { width: 100%; height: 8px; border-radius: 4px; background: var(--clay-soft); overflow: hidden; }
 .welcome__pause-progress span { display: block; height: 100%; border-radius: 4px; background: var(--clay); }
 .welcome__pause-note { font: 600 12px/1 var(--sans); color: var(--clay); }
+
+/* ============ APP MENU ============
+   A left-anchored drawer, opened only by tapping the mark — no swipe
+   gesture wired up, so it can't be triggered by accident. */
+.app-menu__scrim {
+  position: fixed; inset: 0; border: none; padding: 0;
+  background: rgba(35, 32, 26, 0.32);
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  z-index: 200;
+}
+.app-menu__scrim.is-open { opacity: 1; pointer-events: auto; }
+
+.app-menu {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 201;
+  width: min(85vw, 340px); background: var(--paper);
+  box-shadow: 12px 0 32px rgba(35, 32, 26, 0.18);
+  display: flex; flex-direction: column;
+  transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  overflow-y: auto;
+}
+.app-menu.is-open { transform: translateX(0); }
+
+.app-menu__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 16px; border-bottom: 1px solid var(--hairline); flex-shrink: 0;
+}
+.app-menu__title { font-family: var(--serif); font-size: 19px; color: var(--ink); }
+.app-menu__head .iconbtn:last-child { font-size: 20px; }
+
+.app-menu__list { display: flex; flex-direction: column; padding: 8px 0; }
+.app-menu__row {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; border: none; background: transparent; text-align: left;
+  padding: 16px 20px; border-bottom: 1px solid var(--hairline);
+  font: 500 15px/1 var(--sans); color: var(--ink-soft);
+}
+.app-menu__row span { color: var(--decor); }
+.app-menu__row--support { color: var(--sage-deep); font-weight: 600; }
+.app-menu__row--support span { color: var(--sage-deep); }
+
+.app-menu__page { padding: 8px 20px 28px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.app-menu__page p { margin: 0 0 16px; }
+.app-menu__contact-link { color: var(--sage-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+.app-menu__faq-item { padding: 16px 0; border-bottom: 1px solid var(--hairline); }
+.app-menu__faq-item:first-child { padding-top: 0; }
+.app-menu__faq-q { color: var(--ink-soft); font-weight: 600; margin: 0 0 6px; }
+.app-menu__faq-a { color: var(--muted); margin: 0; }

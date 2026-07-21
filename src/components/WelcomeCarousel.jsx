@@ -95,6 +95,15 @@ const CARDS = [
       </div>
     ),
   },
+  {
+    title: 'Go put it to use',
+    text: "I hope this makes shopping and cooking a little bit easier. Remy is built, run, and paid for by one person, not a company — if you ever want to chip in, there's a link in the menu. For now, go cook something good.",
+    diagram: (
+      <div className="welcome__brand">
+        <img src={remyMark} alt="" className="welcome__mark" />
+      </div>
+    ),
+  },
 ]
 
 export default function WelcomeCarousel({ onDone }) {
