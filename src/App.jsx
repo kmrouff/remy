@@ -53,7 +53,12 @@ function formatIngredient(ing) {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState('input') // 'input' | 'confirm' | 'session' | 'library'
+  // 'input' | 'confirm' | 'session' | 'library' | 'auth'
+  // Auth has no entry point in the design (it isn't part of the real flow yet),
+  // so it's reachable at #auth purely for demoing the screens.
+  const [screen, setScreen] = useState(() =>
+    window.location.hash === '#auth' ? 'auth' : 'input'
+  )
   const [recipe, setRecipe] = useState(null)
   const [savedRecipes, setSavedRecipes] = useState(() => getSavedRecipes())
   const [mode, setMode] = useState('shopping') // 'shopping' | 'cooking'
@@ -320,9 +325,6 @@ export default function App() {
         making today?
       </h1>
       <RecipeInput onExtracted={handleExtracted} onUseSample={() => handleExtracted(SAMPLE_RECIPE)} />
-      <button type="button" className="recipe-input__sample" onClick={() => setScreen('auth')}>
-        Sign in
-      </button>
     </main>
   )
 }

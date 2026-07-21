@@ -349,21 +349,26 @@ export default function VoiceSession({
         </>
       )}
 
-      <div className="log">
-        <div className="log__label">Conversation</div>
-        {log.map((entry, i) =>
-          entry.type === 'agent' || entry.type === 'user' ? (
-            <div key={i} className={`log-entry log-entry--${entry.type}`}>
-              {entry.text}
-            </div>
-          ) : (
-            <div key={i} className="log-entry log-entry--tool">
-              <span className="dot" aria-hidden="true" />
-              {entry.text}
-            </div>
-          )
-        )}
-      </div>
+      {/* Cooking leads with the step, so the transcript sits beneath it.
+          Shopping's hero *is* the checklist — it carries the same state the
+          transcript would, so the log is omitted there (see handoff §10/§11). */}
+      {mode === 'cooking' && (
+        <div className="log">
+          <div className="log__label">Conversation</div>
+          {log.map((entry, i) =>
+            entry.type === 'agent' || entry.type === 'user' ? (
+              <div key={i} className={`log-entry log-entry--${entry.type}`}>
+                {entry.text}
+              </div>
+            ) : (
+              <div key={i} className="log-entry log-entry--tool">
+                <span className="dot" aria-hidden="true" />
+                {entry.text}
+              </div>
+            )
+          )}
+        </div>
+      )}
 
       <div className="live-bar">
         {agentMode === 'speaking' ? (

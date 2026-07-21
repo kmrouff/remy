@@ -13,7 +13,11 @@
   --ink:            #23201A;   /* primary text / neutral CTA */
   --ink-soft:       #3A352C;
   --muted:          #6E6559;   /* secondary text */
-  --faint:          #9C9284;   /* tertiary / labels */
+  /* Handoff specified #9C9284, but that lands at 2.68:1 on --paper — below
+     WCAG AA (4.5:1) for the small uppercase labels it's used on (eyebrows,
+     counts, meta). Darkened within the same warm-grey family to 4.51:1 on
+     paper / 4.87:1 on surface. */
+  --faint:          #766C5C;   /* tertiary / labels */
   --hairline:       #E7DFD1;
   --hairline-strong:#D8CDBB;
 
@@ -100,23 +104,10 @@ button { font: inherit; cursor: pointer; }
 @keyframes remy-ring    { 0% { transform: scale(.8); opacity: .5 } 100% { transform: scale(1.7); opacity: 0 } }
 @keyframes remy-shimmer { 0% { background-position: -260px 0 } 100% { background-position: 260px 0 } }
 
-/* ---- provisional dark (WIP — tune before shipping) ---- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper:  #1B1915;
-    --surface:#232019;
-    --surface-2:#2A2620;
-    --ink:    #F1EBE0;
-    --ink-soft:#E4DBCC;
-    --muted:  #A99F90;
-    --faint:  #7C7264;
-    --hairline:#332F27;
-    --hairline-strong:#413B31;
-    --sage: #86A08C; --sage-deep:#9DB4A2; --sage-soft:#26302A; --sage-ink:#DCE7DD;
-    --sage-tint-top:#1F2620; --sage-tint-bot:#1B211C;
-    --clay: #D67E5E; --clay-deep:#E3987A; --clay-soft:#3A2317; --clay-ink:#F3DFD3;
-    --clay-tint-top:#2A1E17; --clay-tint-bot:#241A14;
-    --accent: var(--ink); --accent-text: var(--paper);
-    color-scheme: dark;
-  }
-}
+/* ---- dark mode: deliberately not shipped yet ----
+   The design system is light-first (warm paper). The handoff's dark block
+   was marked "WIP — tune before shipping" and was never designed against
+   the real screens, so it rendered as an undesigned muddy brown with
+   sub-AA text. Until a proper dark pass exists, the app stays light for
+   everyone: `color-scheme: light` above also keeps form controls,
+   scrollbars and autofill from being darkened by the OS preference. */

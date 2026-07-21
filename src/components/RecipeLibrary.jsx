@@ -29,7 +29,10 @@ export default function RecipeLibrary({ recipes, onSelect, onRemove, onBack }) {
                     {recipe.ingredients.length} ingredients · {recipe.steps.length} steps
                     {recipe.progress && (
                       <span className={`recipe-library__paused is-${recipe.progress.mode}`}>
-                        <span className="dot" aria-hidden="true" />
+                        <span className="pause-bars" aria-hidden="true">
+                          <span />
+                          <span />
+                        </span>
                         {recipe.progress.mode === 'cooking' ? `Step ${recipe.progress.cookingStepIndex + 1}` : 'Shopping'}
                       </span>
                     )}

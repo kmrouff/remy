@@ -143,17 +143,17 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
       <input
         type="url"
         inputMode="url"
-        placeholder="Paste a recipe URL…"
+        placeholder="Paste a recipe link…"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         className="recipe-input__field"
         required
       />
       <button type="submit" className="recipe-input__submit">
-        Extract recipe
+        Get the recipe
       </button>
 
-      <div className="recipe-input__divider">or</div>
+      <div className="recipe-input__divider">OR</div>
 
       {photos.length > 0 && (
         <div className="recipe-input__thumbs">
@@ -184,7 +184,7 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
             <path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2l1.2-1.8A1 1 0 0 1 8.5 4.7h7a1 1 0 0 1 .8.5L17.5 7h2A1.5 1.5 0 0 1 21 8.5v9A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z" />
             <circle cx="12" cy="12.3" r="3.3" />
           </svg>
-          {photos.length === 0 ? 'Take photos' : `Take more (${photos.length}/${MAX_PHOTOS})`}
+          {photos.length === 0 ? 'Snap pages' : `Snap more (${photos.length}/${MAX_PHOTOS})`}
         </button>
         <button
           type="button"
@@ -215,12 +215,16 @@ export default function RecipeInput({ onExtracted, onUseSample }) {
         </button>
       )}
 
-      {error && <p className="recipe-input__error">{error}</p>}
-      <button type="button" className="recipe-input__sample" onClick={() => setShowSearch(true)}>
-        Or search recipes by name
+      <button type="button" className="recipe-input__search-row" onClick={() => setShowSearch(true)}>
+        Search by name
+        <span aria-hidden="true">›</span>
       </button>
+
+      {error && <p className="recipe-input__error">{error}</p>}
+
+      <div className="recipe-input__spacer" />
       <button type="button" className="recipe-input__sample" onClick={onUseSample}>
-        Or try a sample recipe
+        Try a sample recipe
       </button>
     </form>
   )
