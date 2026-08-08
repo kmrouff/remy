@@ -39,6 +39,19 @@ const LIMIT_NOTICE =
   'pick up exactly where they are. Then stop talking. Do not ask a question, do not say goodbye ' +
   'as though the cooking is finished, and do not start any new step.'
 
+// A client tool that throws rejects the promise the SDK is awaiting, which can
+// tear down the whole call — the user just sees "server error". Hand the
+// problem back as text instead so the session survives a bad recipe shape.
+function safeTool(name, fn) {
+  return async (args) => {
+    try {
+      return await fn(args)
+    } catch (e) {
+      return `${name} failed: ${e?.message || 'unknown error'}. Tell the user something went wrong on your side, and carry on without it.`
+    }
+  }
+}
+
 function formatQty(ing) {
   return [ing.quantity, ing.unit].filter(Boolean).join(' ')
 }
@@ -49,17 +62,10 @@ function formatQty(ing) {
 // potatoes" made it believe the recipe was mashed potatoes. Sent once on connect
 // and repeated in every tool return, so a long conversation can't drift off it.
 function recipeContext(recipe, { mode, cookingStepIndex, resumed }) {
-  const ingredients = recipe.ingredients
-    .map((ing) => {
-      const qty = formatQty(ing)
-      return qty ? `${ing.item} (${qty})` : ing.item
-    })
-    .join(', ')
   let text =
-    `The recipe for this whole session is "${recipe.title}" — ${recipe.ingredients.length} ingredients, ` +
-    `${recipe.steps.length} steps. The full ingredient list is: ${ingredients}. ` +
-    `Refer to the dish by that name. Never infer what is being cooked from a single step; ` +
-    `an early step may only describe one component of the finished dish.`
+    `The recipe is "${recipe.title}" (${recipe.ingredients.length} ingredients, ` +
+    `${recipe.steps.length} steps). Refer to the dish by that name and never infer it from a ` +
+    `single step. Call get_shopping_list for the ingredients rather than being sent them here.`
 
   if (mode === 'cooking') {
     text += ` They are currently on step ${Math.min(cookingStepIndex + 1, recipe.steps.length)} of ${recipe.steps.length}.`
@@ -180,19 +186,19 @@ export default function VoiceSession({
       }
 
       const clientTools = {
-        get_shopping_list: async () => {
+        // Returns the same bare array shape it always has. The recipe name is
+        // carried by the contextual update instead: changing a tool's return
+        // *type* is a riskier thing to do than it looks.
+        get_shopping_list: safeTool('get_shopping_list', async () => {
           const { recipe, shoppingConfirmations } = stateRef.current
-          const list = recipe.ingredients.map((ing) => ({
+          const list = (recipe.ingredients || []).map((ing) => ({
             ...ing,
             status: shoppingConfirmations[ing.item]?.status ?? 'pending',
-            note: shoppingConfirmations[ing.item]?.note ?? undefined,
           }))
           appendLog({ type: 'tool', text: `Checked the shopping list — ${list.length} items` })
-          // Titled, so re-checking the list mid-conversation also re-grounds
-          // the agent on which dish this is.
-          return JSON.stringify({ recipe: recipe.title, items: list })
-        },
-        confirm_ingredient: async ({ ingredient, status, note }) => {
+          return JSON.stringify(list)
+        }),
+        confirm_ingredient: safeTool('confirm_ingredient', async ({ ingredient, status, note }) => {
           setShoppingConfirmations((prev) => ({
             ...prev,
             [ingredient]: { status, note },
@@ -202,8 +208,8 @@ export default function VoiceSession({
             text: `Marked ${ingredient} as ${status}${note ? ` (${note})` : ''}`,
           })
           return 'ok'
-        },
-        get_next_step: async () => {
+        }),
+        get_next_step: safeTool('get_next_step', async () => {
           const { recipe, cookingStepIndex, mode } = stateRef.current
           // Mode can't change mid-call — the screen stays on the shopping
           // checklist regardless of what gets said, so reading a step here
@@ -218,27 +224,16 @@ export default function VoiceSession({
             hasReadAStepRef.current = true
             setCookingStepIndex(nextIndex)
             appendLog({ type: 'tool', text: `Moved on to step ${nextIndex + 1}` })
-            // Numbered and titled: a bare step string reads like the whole
-            // recipe, which is how the agent used to mistake step one for the
-            // finished dish.
-            return JSON.stringify({
-              recipe: recipe.title,
-              step: nextIndex + 1,
-              of: recipe.steps.length,
-              instruction: step,
-            })
+            // Still a plain string, but numbered: one step of many, not the dish.
+            return `Step ${nextIndex + 1} of ${recipe.steps.length} of "${recipe.title}": ${step}`
           }
           appendLog({ type: 'tool', text: 'Reached the end of the recipe' })
-          return JSON.stringify({
-            recipe: recipe.title,
-            done: true,
-            message: `no more steps — ${recipe.title} is complete`,
-          })
-        },
-        log_observation: async ({ observation }) => {
+          return `no more steps — "${recipe.title}" is complete`
+        }),
+        log_observation: safeTool('log_observation', async ({ observation }) => {
           appendLog({ type: 'observation', text: observation })
           return 'logged'
-        },
+        }),
       }
 
       try {
