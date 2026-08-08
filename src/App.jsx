@@ -160,7 +160,7 @@ export default function App() {
     setLimitPaused(true)
   }
 
-  function handleResumeAfterLimit() {
+  function handleResumeSession() {
     setLimitPaused(false)
     setResumedSession(true)
     setSessionKey((k) => k + 1)
@@ -289,7 +289,7 @@ export default function App() {
               : ' — your list is exactly as you left it.'}
           </p>
         </div>
-        <button type="button" className="btn-mode" onClick={handleResumeAfterLimit}>
+        <button type="button" className="btn-mode" onClick={handleResumeSession}>
           Pick up where we left off
         </button>
         <div className="confirm__foot">
@@ -322,6 +322,7 @@ export default function App() {
         onSwitchToCooking={handleSwitchToCooking}
         resumed={resumedSession}
         onSessionLimit={handleSessionLimit}
+        onResume={handleResumeSession}
       />
     )
   }

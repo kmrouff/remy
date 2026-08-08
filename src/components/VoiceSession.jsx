@@ -301,6 +301,18 @@ export default function VoiceSession({
     onBack()
   }
 
+  // Tapping Pause closes the call *before* the sheet opens, rather than
+  // leaving it live while the user reads their options. The session is what
+  // costs money and burns the call-length budget, and none of it is being
+  // used while a menu is up.
+  async function handlePauseTap() {
+    intentionalDisconnectRef.current = true
+    clearTimeout(limitTimerRef.current)
+    setStatus('disconnecting')
+    await conversationRef.current?.endSession()
+    setShowWrapUp(true)
+  }
+
   async function endThenRun(action) {
     intentionalDisconnectRef.current = true
     setShowWrapUp(false)
@@ -393,6 +405,8 @@ export default function VoiceSession({
   }
 
   // ---- Active session ----
+  const isPaused = status === 'disconnecting' || status === 'disconnected'
+  const onLastStep = mode === 'cooking' && cookingStepIndex >= recipe.steps.length - 1
   const currentStep = recipe.steps[cookingStepIndex]
   const sortedCount = recipe.ingredients.filter((ing) => shoppingConfirmations[ing.item]).length
   const toGo = recipe.ingredients.length - sortedCount
@@ -553,25 +567,37 @@ export default function VoiceSession({
         ) : (
           <span className="pulse" />
         )}
-        <span className="live-bar__label">{agentMode === 'speaking' ? 'Remy is speaking…' : 'Listening…'}</span>
-        <button type="button" className="live-bar__wrap-up" onClick={() => setShowWrapUp(true)}>
-          Wrap up
+        <span className="live-bar__label">
+          {isPaused ? 'Paused' : agentMode === 'speaking' ? 'Remy is speaking…' : 'Listening…'}
+        </span>
+        <button type="button" className="live-bar__wrap-up" onClick={handlePauseTap} disabled={isPaused}>
+          {onLastStep ? 'Finish' : 'Pause'}
         </button>
       </div>
 
       {showWrapUp && (
         <>
-          <div className="wrap-up__scrim" onClick={() => setShowWrapUp(false)} />
+          {/* No scrim dismiss: the call is already closed by the time this is
+              up, so tapping away would leave a dead session behind a live-
+              looking screen. Every exit from here is an explicit choice. */}
+          <div className="wrap-up__scrim" />
           <div className="wrap-up">
             <div className="wrap-up__handle" />
-            <div className="wrap-up__title">Wrap up?</div>
+            <div className="wrap-up__title">Paused</div>
             <div className="wrap-up__sub">
               {mode === 'cooking'
-                ? `You're on step ${Math.min(cookingStepIndex + 1, recipe.steps.length)} of ${recipe.steps.length}. Nothing's lost either way.`
-                : "Nothing's lost either way."}
+                ? `You're on step ${Math.min(cookingStepIndex + 1, recipe.steps.length)} of ${recipe.steps.length}. Remy's off the clock until you pick back up.`
+                : "Your list is as you left it. Remy's off the clock until you pick back up."}
             </div>
+            <button type="button" className="wrap-up__opt wrap-up__opt--primary" onClick={onResume}>
+              <span className="wrap-up__opt-icon">▸</span>
+              <span>
+                <span className="wrap-up__opt-title">Resume</span>
+                <span className="wrap-up__opt-note">Carry on from right here</span>
+              </span>
+            </button>
             {mode === 'shopping' && (
-              <button type="button" className="wrap-up__opt wrap-up__opt--primary" onClick={() => endThenRun(onSwitchToCooking)}>
+              <button type="button" className="wrap-up__opt" onClick={() => endThenRun(onSwitchToCooking)}>
                 <span className="wrap-up__opt-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14" />
@@ -586,7 +612,7 @@ export default function VoiceSession({
                 </span>
               </button>
             )}
-            <button type="button" className={`wrap-up__opt${mode === 'cooking' ? ' wrap-up__opt--primary' : ''}`} onClick={() => endThenRun(onPause)}>
+            <button type="button" className="wrap-up__opt" onClick={() => endThenRun(onPause)}>
               <span className="wrap-up__opt-icon">
                 <span className="pause-bars" aria-hidden="true">
                   <span />
@@ -594,7 +620,7 @@ export default function VoiceSession({
                 </span>
               </span>
               <span>
-                <span className="wrap-up__opt-title">Pause &amp; resume later</span>
+                <span className="wrap-up__opt-title">Save &amp; come back later</span>
                 <span className="wrap-up__opt-note">
                   {mode === 'cooking'
                     ? `I'll remember you're at step ${Math.min(cookingStepIndex + 1, recipe.steps.length)}`
@@ -633,8 +659,8 @@ export default function VoiceSession({
                 <span className="wrap-up__opt-note">Tell a friend you used Remy</span>
               </span>
             </button>
-            <button type="button" className="wrap-up__keep" onClick={() => setShowWrapUp(false)}>
-              Keep going
+            <button type="button" className="wrap-up__keep" onClick={onBack}>
+              Back to the recipe
             </button>
           </div>
         </>
