@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+
+# Source captures for docs/. Kept local: the screen recordings are hundreds
+# of megabytes, well past GitHub's per-file limit. Only the derived GIF and
+# stills in docs/ are committed.
+raw/

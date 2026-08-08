@@ -5,13 +5,18 @@ ingredients while your hands are busy.
 
 <img src="docs/demo.gif" width="300">
 
+<p>
+  <img src="docs/cooking.png" width="300">
+  <img src="docs/handoff.png" width="300">
+</p>
+
 Live at https://www.remythechef.com
 
 ## Why I built it
 
 Cooking from a phone means washing your hands to scroll, or propping the screen
-where it will get splattered. Recipe apps assume you are looking at them. I
-wanted one that assumes you are not, so the screen is for glancing, not tapping.
+where it gets splattered. Recipe apps assume you are looking at them. I wanted
+one that assumes you are not, so the screen is for glancing, not tapping.
 
 ## How it works
 
@@ -31,7 +36,7 @@ updates as you talk. Cooking renders a step card you can also move by hand.
 
 Accounts are optional. Guest recipes live in `localStorage`. Signing in points
 the same storage layer at Supabase Postgres, protected by row-level security,
-and claims on-device recipes into the account on first sign-in.
+and claims on-device recipes on first sign-in.
 
 ## Status and limitations
 
@@ -40,8 +45,8 @@ end to end. Accounts are verified against a real Supabase project.
 
 Known gaps:
 
-- The agent's prompt, voice and tool definitions live in the ElevenLabs
-  dashboard, not this repo, so cloning alone will not give a working agent.
+- The agent's prompt, voice and tools live in the ElevenLabs dashboard, not
+  this repo, so cloning alone will not give a working agent.
 - The agent has no host allowlist.
 - A bad extraction can be retried but not edited.
 - Recipes from URLs and photos have no image; only Spoonacular supplies one.
@@ -54,9 +59,9 @@ npm install
 npx vercel dev
 ```
 
-Use `vercel dev` rather than `npm run dev`, because plain Vite does not serve
-the `api/` routes. The function runtime reads `.env`, not `.env.local`, so
-server keys need to be in both.
+Use `vercel dev`, not `npm run dev`: plain Vite does not serve the `api/`
+routes. The function runtime reads `.env`, not `.env.local`, so server keys
+need to be in both.
 
 ```
 VITE_ELEVENLABS_AGENT_ID=   # public
@@ -67,4 +72,4 @@ VITE_SUPABASE_ANON_KEY=     # optional
 ```
 
 Accounts also need `supabase/schema.sql` run in the Supabase SQL editor, which
-creates the recipes table and its row-level security policies.
+creates the recipes table and its RLS policies.
