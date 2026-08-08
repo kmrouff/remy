@@ -26,8 +26,53 @@ const FIRST_MESSAGE = {
     "Hey, I'm Remy, ready to guide you through this hands-free. Take your time getting set up — I'll wait quietly, just say 'Remy' when you want to start.",
 }
 
+// Hand off a few minutes short of the agent's configured max conversation
+// duration, so the close is a deliberate pause rather than the platform
+// cutting the call mid-sentence. Raise the dashboard cap and this together.
+const SESSION_SOFT_LIMIT_MS = 25 * 60 * 1000
+const LIMIT_ANNOUNCE_MS = 9000
+
+const LIMIT_NOTICE =
+  'SYSTEM: this call is about to reach its maximum length, which is a platform limit and has ' +
+  'nothing to do with the user. Right now, in one short friendly line, tell them a single call ' +
+  "can't run any longer, that nothing is lost, and that they can tap the button on screen to " +
+  'pick up exactly where they are. Then stop talking. Do not ask a question, do not say goodbye ' +
+  'as though the cooking is finished, and do not start any new step.'
+
 function formatQty(ing) {
   return [ing.quantity, ing.unit].filter(Boolean).join(' ')
+}
+
+// The agent cannot see the screen, so the dish has to be said outright. Without
+// this it only ever received bare ingredient names and bare step text, and would
+// infer the dish from whatever step it had just read: "boil and mash the
+// potatoes" made it believe the recipe was mashed potatoes. Sent once on connect
+// and repeated in every tool return, so a long conversation can't drift off it.
+function recipeContext(recipe, { mode, cookingStepIndex, resumed }) {
+  const ingredients = recipe.ingredients
+    .map((ing) => {
+      const qty = formatQty(ing)
+      return qty ? `${ing.item} (${qty})` : ing.item
+    })
+    .join(', ')
+  let text =
+    `The recipe for this whole session is "${recipe.title}" — ${recipe.ingredients.length} ingredients, ` +
+    `${recipe.steps.length} steps. The full ingredient list is: ${ingredients}. ` +
+    `Refer to the dish by that name. Never infer what is being cooked from a single step; ` +
+    `an early step may only describe one component of the finished dish.`
+
+  if (mode === 'cooking') {
+    text += ` They are currently on step ${Math.min(cookingStepIndex + 1, recipe.steps.length)} of ${recipe.steps.length}.`
+  }
+  // A resumed session is a brand new call to the API but the same cook to the
+  // user — without this the agent re-introduces itself and offers to start over.
+  if (resumed) {
+    text +=
+      ` This is a reconnection of a session already in progress, not a new one. Do not introduce` +
+      ` yourself, do not start from the beginning, and do not re-run the prep questions. Greet them` +
+      ` in one short line that picks up exactly where they left off, then wait.`
+  }
+  return text
 }
 
 // Right-hand status column on the checklist. The agent records a status plus
@@ -64,6 +109,8 @@ export default function VoiceSession({
   onRetry,
   onBack,
   onSwitchToCooking,
+  resumed,
+  onSessionLimit,
 }) {
   const [status, setStatus] = useState('connecting') // disconnected | connecting | connected | disconnecting
   const [agentMode, setAgentMode] = useState('listening') // listening | speaking
@@ -81,6 +128,7 @@ export default function VoiceSession({
   // actions), so the effect below can tell that apart from the agent (or
   // the network) ending it on its own.
   const intentionalDisconnectRef = useRef(false)
+  const limitTimerRef = useRef(null)
   // cookingStepIndex means "the step you're on", so the card on screen always
   // matches what Remy just read. That requires knowing whether a step has
   // been read *this session*: the first call serves the current index (on a
@@ -97,6 +145,25 @@ export default function VoiceSession({
       setShowWrapUp(true)
     }
   }, [status, error])
+
+  // ElevenLabs caps a single conversation's wall-clock duration, and this app
+  // burns that budget on waiting rather than talking: the walk to the shop, a
+  // pan on a low simmer. Rather than be cut off mid-recipe, hand off before the
+  // cap — the agent says why, we close the call, and the user taps to come
+  // back. Progress survives because it lives in App, not in this component.
+  useEffect(() => {
+    if (status !== 'connected' || limitTimerRef.current) return
+    limitTimerRef.current = setTimeout(async () => {
+      intentionalDisconnectRef.current = true
+      conversationRef.current?.sendContextualUpdate(LIMIT_NOTICE)
+      // Give it room to actually say the line before the line goes dead.
+      await new Promise((resolve) => setTimeout(resolve, LIMIT_ANNOUNCE_MS))
+      await conversationRef.current?.endSession()
+      onSessionLimit?.()
+    }, SESSION_SOFT_LIMIT_MS)
+  }, [status, onSessionLimit])
+
+  useEffect(() => () => clearTimeout(limitTimerRef.current), [])
 
   function appendLog(entry) {
     setLog((prev) => [...prev.slice(-19), entry])
@@ -118,9 +185,12 @@ export default function VoiceSession({
           const list = recipe.ingredients.map((ing) => ({
             ...ing,
             status: shoppingConfirmations[ing.item]?.status ?? 'pending',
+            note: shoppingConfirmations[ing.item]?.note ?? undefined,
           }))
           appendLog({ type: 'tool', text: `Checked the shopping list — ${list.length} items` })
-          return JSON.stringify(list)
+          // Titled, so re-checking the list mid-conversation also re-grounds
+          // the agent on which dish this is.
+          return JSON.stringify({ recipe: recipe.title, items: list })
         },
         confirm_ingredient: async ({ ingredient, status, note }) => {
           setShoppingConfirmations((prev) => ({
@@ -148,10 +218,22 @@ export default function VoiceSession({
             hasReadAStepRef.current = true
             setCookingStepIndex(nextIndex)
             appendLog({ type: 'tool', text: `Moved on to step ${nextIndex + 1}` })
-            return step
+            // Numbered and titled: a bare step string reads like the whole
+            // recipe, which is how the agent used to mistake step one for the
+            // finished dish.
+            return JSON.stringify({
+              recipe: recipe.title,
+              step: nextIndex + 1,
+              of: recipe.steps.length,
+              instruction: step,
+            })
           }
           appendLog({ type: 'tool', text: 'Reached the end of the recipe' })
-          return 'no more steps — recipe complete'
+          return JSON.stringify({
+            recipe: recipe.title,
+            done: true,
+            message: `no more steps — ${recipe.title} is complete`,
+          })
         },
         log_observation: async ({ observation }) => {
           appendLog({ type: 'observation', text: observation })
@@ -184,7 +266,10 @@ export default function VoiceSession({
           return
         }
         conversationRef.current = conversation
-        conversation.sendContextualUpdate(MODE_CONTEXT[stateRef.current.mode])
+        const { recipe: r, mode: m, cookingStepIndex: i } = stateRef.current
+        conversation.sendContextualUpdate(
+          `${recipeContext(r, { mode: m, cookingStepIndex: i, resumed })}\n\n${MODE_CONTEXT[m]}`
+        )
       } catch (e) {
         setError(
           e?.name === 'NotAllowedError' || /permission/i.test(String(e?.message))

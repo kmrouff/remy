@@ -69,6 +69,8 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [markPulsing, setMarkPulsing] = useState(false)
   const [justOnboarded, setJustOnboarded] = useState(false)
+  const [limitPaused, setLimitPaused] = useState(false)
+  const [resumedSession, setResumedSession] = useState(false)
 
   // Only the arrival right after onboarding gets the entrance animation —
   // it's a one-time "you made it" beat, not something to replay every time
@@ -147,6 +149,20 @@ export default function App() {
   // so this is the actual mechanism — see VoiceSession's wrap-up sheet.
   function handleSwitchToCooking() {
     setMode('cooking')
+    setSessionKey((k) => k + 1)
+  }
+
+  // The voice session hands off before hitting the platform's call-length cap.
+  // Nothing is persisted here on purpose: cookingStepIndex and
+  // shoppingConfirmations already live in this component, so reconnecting is
+  // just a remount and the cook carries on untouched.
+  function handleSessionLimit() {
+    setLimitPaused(true)
+  }
+
+  function handleResumeAfterLimit() {
+    setLimitPaused(false)
+    setResumedSession(true)
     setSessionKey((k) => k + 1)
   }
 
@@ -248,6 +264,43 @@ export default function App() {
     return <WelcomeCarousel onDone={handleWelcomeDone} />
   }
 
+  // Between the hand-off and the tap back in, the mic is closed — so this
+  // screen is the one place in a session that isn't hands-free. It stays
+  // deliberately bare: one big target, and the step they're on so they can
+  // see nothing was lost.
+  if (screen === 'session' && recipe && limitPaused) {
+    return (
+      <main className={`app-screen theme-${mode}`}>
+        <div className="topbar">
+          <span className="topbar__title">{recipe.title}</span>
+        </div>
+        <div className="session-paused">
+          <div className="session-paused__mark">
+            <span className="pause-bars" aria-hidden="true">
+              <span />
+              <span />
+            </span>
+          </div>
+          <h2>Paused</h2>
+          <p>
+            A single call can only run so long, so I stepped out for a second. Nothing's lost
+            {mode === 'cooking'
+              ? ` — you're still on step ${Math.min(cookingStepIndex + 1, recipe.steps.length)} of ${recipe.steps.length}.`
+              : ' — your list is exactly as you left it.'}
+          </p>
+        </div>
+        <button type="button" className="btn-mode" onClick={handleResumeAfterLimit}>
+          Pick up where we left off
+        </button>
+        <div className="confirm__foot">
+          <button type="button" onClick={handlePause}>
+            Save &amp; stop here
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   if (screen === 'session' && recipe) {
     const isSaved = Boolean(recipe.id) && savedRecipes.some((r) => r.id === recipe.id)
     return (
@@ -267,6 +320,8 @@ export default function App() {
         onRetry={handleRetry}
         onBack={handleBackToRecipe}
         onSwitchToCooking={handleSwitchToCooking}
+        resumed={resumedSession}
+        onSessionLimit={handleSessionLimit}
       />
     )
   }

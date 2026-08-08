@@ -5,7 +5,7 @@ const CARDS = [
   {
     eyebrow: 'Meet Remy',
     title: 'Cook with your hands full',
-    text: "Remy is your invisible sous-chef. Talk to it out loud while you cook or shop — it reads the steps, tracks your ingredients, and never needs a tap.",
+    text: "Your invisible sous-chef. Talk out loud while you cook or shop, and never touch the screen.",
     diagram: (
       <div className="welcome__brand">
         <img src={remyMark} alt="" className="welcome__mark" />
@@ -14,7 +14,7 @@ const CARDS = [
   },
   {
     title: 'Bring in any recipe',
-    text: 'Paste a link, snap the cookbook page, or search by name. Remy pulls out the ingredients and steps in seconds.',
+    text: 'Paste a link, snap the cookbook page, or search by name.',
     diagram: (
       <div className="welcome__sources">
         {/* abstracted source marks — a link, a photo, a search ring.
@@ -62,7 +62,7 @@ const CARDS = [
   },
   {
     title: 'Then just talk',
-    text: "It's a conversation — completely hands-free. Talk to Remy like a friend in the kitchen: what you're doing, what you're swapping, what you can't find. And when things go quiet — chopping, simmering, wandering the aisles — Remy waits. Just say “Remy” to bring it back; it won't butt in on talk that isn't for it.",
+    text: "Talk like you would to a friend in the kitchen. When things go quiet, Remy waits — just say “Remy” to bring it back.",
     diagram: (
       <div className="welcome__chat">
         <div className="welcome__chat-bubble welcome__chat-bubble--agent">
@@ -80,7 +80,7 @@ const CARDS = [
   },
   {
     title: 'Pause whenever',
-    text: "Step away and come back later — Remy remembers exactly where you left off, right down to the step.",
+    text: "Step away and come back. Remy remembers the exact step you left off on.",
     diagram: (
       <div className="welcome__pause">
         <div className="welcome__pause-bars">

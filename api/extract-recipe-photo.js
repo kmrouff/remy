@@ -54,8 +54,8 @@ export default async function handler(req, res) {
               type: 'text',
               text:
                 imageBlocks.length > 1
-                  ? `Extract the recipe shown across these ${imageBlocks.length} photos (consecutive pages of the same cookbook, card, or screenshot — combine them into one recipe). Split each ingredient into item/quantity/unit where possible, and write each step as one clear imperative instruction.`
-                  : 'Extract the recipe shown in this photo (a cookbook page, handwritten card, or screenshot). Split each ingredient into item/quantity/unit where possible, and write each step as one clear imperative instruction.',
+                  ? `Extract the recipe shown across these ${imageBlocks.length} photos (consecutive pages of the same cookbook, card, or screenshot — combine them into one recipe). Split each ingredient into item/quantity/unit, always filling in quantity even when the recipe is vague ("to taste", "a pinch"), and write each step as one clear imperative instruction.`
+                  : 'Extract the recipe shown in this photo (a cookbook page, handwritten card, or screenshot). Split each ingredient into item/quantity/unit, always filling in quantity even when the recipe is vague ("to taste", "a pinch"), and write each step as one clear imperative instruction.',
             },
           ],
         },

@@ -56,7 +56,7 @@ export default async function handler(req, res) {
         {
           role: 'user',
           content:
-            `Extract the recipe from this page content. Split each ingredient into item/quantity/unit where possible, and write each step as one clear imperative instruction.\n\n` +
+            `Extract the recipe from this page content. Split each ingredient into item/quantity/unit, always filling in quantity even when the recipe is vague ("to taste", "a pinch"), and write each step as one clear imperative instruction.\n\n` +
             `Page title: ${article.title}\n\n${article.textContent.slice(0, 15_000)}`,
         },
       ],
