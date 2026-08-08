@@ -51,10 +51,6 @@ const PITCH = {
   }),
 }
 
-function formatIngredient(ing) {
-  return [ing.quantity, ing.unit, ing.item].filter(Boolean).join(' ')
-}
-
 export default function App() {
   // 'input' | 'confirm' | 'session' | 'library' | 'auth'
   // Auth has no entry point in the design (it isn't part of the real flow yet),
@@ -378,10 +374,17 @@ export default function App() {
               <div className="confirm__pitch-quote">"{pitch.quote}"</div>
               <div className="confirm__pitch-note">{pitch.note}</div>
             </div>
-            {mode === 'shopping' && recipe.ingredients[0] && (
-              <div className="confirm__first">
-                First on the list: <strong>{formatIngredient(recipe.ingredients[0])}.</strong>
-              </div>
+            {/* Shopping shows the whole list, not a teaser: people want to
+                see what they're in for before committing to a session. */}
+            {mode === 'shopping' && recipe.ingredients.length > 0 && (
+              <ul className="confirm__list">
+                {recipe.ingredients.map((ing) => (
+                  <li key={ing.item}>
+                    <span>{ing.item}</span>
+                    <span className="confirm__list-qty">{[ing.quantity, ing.unit].filter(Boolean).join(' ')}</span>
+                  </li>
+                ))}
+              </ul>
             )}
             {mode === 'cooking' && recipe.steps[0] && (
               <div className="confirm__first">

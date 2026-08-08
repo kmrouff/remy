@@ -30,6 +30,18 @@ function formatQty(ing) {
   return [ing.quantity, ing.unit].filter(Boolean).join(' ')
 }
 
+// Right-hand status column on the checklist. The agent records a status plus
+// a free-text note; "missing" covers both "buying it later" and "skipping it
+// this time", which read very differently to someone standing in a shop, so
+// the note is sniffed to tell them apart. Falls back to the safer "Skipped".
+function statusLabel(conf) {
+  if (!conf) return 'To get'
+  if (conf.status === 'missing') {
+    return /\b(buy|buying|later|pick up|grab)\b/i.test(conf.note || '') ? 'Buy later' : 'Skipped'
+  }
+  return { confirmed: 'Got it', partial: 'Partial', substituted: 'Swapped' }[conf.status] ?? 'To get'
+}
+
 /**
  * Hands-free voice screen. Owns the ElevenLabs Conversation lifecycle and
  * resolves the four agent tool calls against the recipe state passed down
@@ -69,6 +81,12 @@ export default function VoiceSession({
   // actions), so the effect below can tell that apart from the agent (or
   // the network) ending it on its own.
   const intentionalDisconnectRef = useRef(false)
+  // cookingStepIndex means "the step you're on", so the card on screen always
+  // matches what Remy just read. That requires knowing whether a step has
+  // been read *this session*: the first call serves the current index (on a
+  // resume, that re-reads the step you paused on), and only later calls
+  // advance. Without this the screen sat one step ahead of the voice.
+  const hasReadAStepRef = useRef(false)
 
   // A disconnect we didn't initiate — the agent's own end-call tool, or a
   // dropped connection — would otherwise leave the last screen frozen on
@@ -124,10 +142,12 @@ export default function VoiceSession({
           if (mode !== 'cooking') {
             return "not available — still in Shopping mode. If the user is done shopping, tell them to use the 'Done shopping' option to move to Cooking; don't describe recipe steps yet."
           }
-          const step = recipe.steps[cookingStepIndex]
+          const nextIndex = hasReadAStepRef.current ? cookingStepIndex + 1 : cookingStepIndex
+          const step = recipe.steps[nextIndex]
           if (step) {
-            setCookingStepIndex((i) => i + 1)
-            appendLog({ type: 'tool', text: `Moved on to step ${cookingStepIndex + 1}` })
+            hasReadAStepRef.current = true
+            setCookingStepIndex(nextIndex)
+            appendLog({ type: 'tool', text: `Moved on to step ${nextIndex + 1}` })
             return step
           }
           appendLog({ type: 'tool', text: 'Reached the end of the recipe' })
@@ -213,6 +233,19 @@ export default function VoiceSession({
     }
   }
 
+  // Card arrows are a peer of the agent's own stepping, not a separate
+  // pointer: moving here tells Remy where the user went, so the next
+  // get_next_step continues from the new position rather than snapping back.
+  function goToStep(target) {
+    const clamped = Math.max(0, Math.min(target, recipe.steps.length - 1))
+    if (clamped === cookingStepIndex) return
+    hasReadAStepRef.current = true
+    setCookingStepIndex(clamped)
+    conversationRef.current?.sendContextualUpdate(
+      `The user moved to step ${clamped + 1} of ${recipe.steps.length} themselves on screen: "${recipe.steps[clamped]}". Don't re-read it unless they ask — just carry on from here.`
+    )
+  }
+
   function handleSkipIngredient(item) {
     setShoppingConfirmations((prev) => ({ ...prev, [item]: { status: 'missing', note: '' } }))
   }
@@ -294,8 +327,8 @@ export default function VoiceSession({
       {error && <p className="voice-session__error">{error}</p>}
 
       {mode === 'cooking' ? (
-        <div className="step-hero">
-          <div className="step-hero__meta">
+        <div className="step-card">
+          <div className="step-card__meta">
             <span className="step-hero__label">
               STEP {Math.min(cookingStepIndex + 1, recipe.steps.length)} OF {recipe.steps.length}
             </span>
@@ -305,7 +338,28 @@ export default function VoiceSession({
               ))}
             </div>
           </div>
-          <div className="step-hero__text">{currentStep ?? "That's the last step — enjoy!"}</div>
+          <div className="step-card__text">{currentStep ?? "That's the last step — enjoy!"}</div>
+          <div className="step-card__nav">
+            <button
+              type="button"
+              className="step-card__arrow"
+              onClick={() => goToStep(cookingStepIndex - 1)}
+              disabled={cookingStepIndex === 0}
+              aria-label="Previous step"
+            >
+              ‹
+            </button>
+            <span className="step-card__hint">Remy moves these as you cook</span>
+            <button
+              type="button"
+              className="step-card__arrow"
+              onClick={() => goToStep(cookingStepIndex + 1)}
+              disabled={cookingStepIndex >= recipe.steps.length - 1}
+              aria-label="Next step"
+            >
+              ›
+            </button>
+          </div>
         </div>
       ) : (
         <>
@@ -321,66 +375,64 @@ export default function VoiceSession({
             </div>
           </div>
 
+          {/* One row shape for every state — the status column on the right
+              is what changes, so the list stays scannable at a glance while
+              Remy mutates it mid-conversation. */}
           <ul className="check-list">
             {recipe.ingredients.map((ing) => {
               const conf = shoppingConfirmations[ing.item]
               const qty = formatQty(ing)
+              const status = conf?.status ?? 'pending'
+              const mark = { confirmed: '✓', partial: '!', substituted: '⇄', missing: '✕' }[status] ?? ''
+              const rowClass = {
+                confirmed: 'is-have',
+                partial: 'is-partial',
+                substituted: 'is-swap',
+                missing: 'is-skip',
+              }[status]
 
-              if (conf?.status === 'confirmed') {
-                return (
-                  <li key={ing.item} className="check-row is-have">
-                    <span className="check-row__mark">✓</span>
-                    <span className="check-row__name">{ing.item}</span>
-                    <span className="check-row__qty">{qty}</span>
-                  </li>
-                )
-              }
-              if (conf?.status === 'partial') {
-                return (
-                  <li key={ing.item} className="check-row is-partial">
-                    <span className="check-row__mark">!</span>
-                    <span className="check-row__name">
-                      {ing.item}
-                      <span className="check-row__sub">{conf.note || 'Not quite enough'}</span>
-                    </span>
-                    <span className="check-row__qty">{qty}</span>
-                  </li>
-                )
-              }
-              if (conf?.status === 'substituted') {
-                return (
-                  <li key={ing.item} className="check-row is-swap">
-                    <span className="check-row__mark">⇄</span>
-                    <span className="check-row__name">
-                      <span className="old">{ing.item}</span> → <span className="new">{conf.note || 'substituted'}</span>
-                      <span className="check-row__sub">Swapped</span>
-                    </span>
-                    <span className="check-row__qty">{qty}</span>
-                  </li>
-                )
-              }
-              if (conf?.status === 'missing') {
-                return (
-                  <li key={ing.item} className="check-row is-skip">
-                    <span className="check-row__mark">✕</span>
-                    <span className="check-row__name">
-                      {ing.item}
-                      <span className="check-row__sub">{conf.note || "Couldn't find — skipped"}</span>
-                    </span>
-                    <button type="button" className="check-row__action" onClick={() => handleUndoIngredient(ing.item)}>
-                      Undo
-                    </button>
-                  </li>
-                )
-              }
               return (
-                <li key={ing.item} className="check-row">
-                  <span className="check-row__mark" />
-                  <span className="check-row__name">{ing.item}</span>
-                  <span className="check-row__qty">{qty}</span>
-                  <button type="button" className="check-row__skip" onClick={() => handleSkipIngredient(ing.item)}>
-                    Skip
-                  </button>
+                <li key={ing.item} className={`check-row${rowClass ? ` ${rowClass}` : ''}`}>
+                  <span className="check-row__mark">{mark}</span>
+                  <span className="check-row__name">
+                    {/* the label is struck on its own, never the sub-line —
+                        text-decoration bleeds into descendants and can't be
+                        turned off from the child, so they stay siblings */}
+                    <span className="check-row__label">
+                      {status === 'substituted' ? (
+                        <>
+                          <span className="old">{ing.item}</span> → <span className="new">{conf.note || 'substituted'}</span>
+                        </>
+                      ) : (
+                        ing.item
+                      )}
+                    </span>
+                    <span className="check-row__sub">
+                      {qty}
+                      {status === 'partial' && conf.note ? ` · ${conf.note}` : ''}
+                      {status === 'missing' && conf.note ? ` · ${conf.note}` : ''}
+                    </span>
+                  </span>
+                  <span className="check-row__status">{statusLabel(conf)}</span>
+                  {conf ? (
+                    <button
+                      type="button"
+                      className="check-row__action"
+                      onClick={() => handleUndoIngredient(ing.item)}
+                      aria-label={`Undo ${ing.item}`}
+                    >
+                      ↺
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="check-row__action"
+                      onClick={() => handleSkipIngredient(ing.item)}
+                      aria-label={`Skip ${ing.item}`}
+                    >
+                      ✕
+                    </button>
+                  )}
                 </li>
               )
             })}
@@ -388,24 +440,20 @@ export default function VoiceSession({
         </>
       )}
 
-      {/* Cooking leads with the step, so the transcript sits beneath it.
-          Shopping's hero *is* the checklist — it carries the same state the
-          transcript would, so the log is omitted there (see handoff §10/§11). */}
+      {/* The step card is what you orient by; this is just enough transcript
+          to catch a line you missed over a running tap. Last few turns only,
+          spoken words only — tool bookkeeping isn't worth the space here.
+          Shopping omits it entirely: its checklist already shows that state. */}
       {mode === 'cooking' && (
-        <div className="log">
-          <div className="log__label">Conversation</div>
-          {log.map((entry, i) =>
-            entry.type === 'agent' || entry.type === 'user' ? (
+        <div className="log log--compact">
+          {log
+            .filter((entry) => entry.type === 'agent' || entry.type === 'user')
+            .slice(-3)
+            .map((entry, i) => (
               <div key={i} className={`log-entry log-entry--${entry.type}`}>
                 {entry.text}
               </div>
-            ) : (
-              <div key={i} className="log-entry log-entry--tool">
-                <span className="dot" aria-hidden="true" />
-                {entry.text}
-              </div>
-            )
-          )}
+            ))}
         </div>
       )}
 

@@ -252,6 +252,17 @@
   color: color-mix(in srgb, var(--mode-ink) 70%, transparent);
 }
 .confirm__first strong { color: var(--mode-ink); font-weight: 600; }
+/* full ingredient list on the shopping confirm screen */
+.confirm__list {
+  list-style: none; margin: 0; padding: 6px 2px; min-height: 0; overflow-y: auto;
+}
+.confirm__list li {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  padding: 9px 2px; font-size: 14.5px; color: color-mix(in srgb, var(--mode-ink) 78%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--mode-deep) 8%, transparent);
+}
+.confirm__list li:last-child { border-bottom: none; }
+.confirm__list-qty { flex-shrink: 0; font-size: 13px; color: color-mix(in srgb, var(--mode-ink) 50%, transparent); }
 
 /* primary CTA that adopts the mode colour */
 .btn-mode {
@@ -303,18 +314,35 @@
 }
 .voice-session__save:disabled { opacity: .6; }
 
-/* cooking: hero current step */
-.step-hero {
+/* cooking: the step card — primary orientation, steppable by hand or voice */
+.step-card {
   background: color-mix(in srgb, #fff 55%, var(--mode-soft));
   border: 1px solid color-mix(in srgb, var(--mode-deep) 12%, transparent);
-  border-radius: 20px; padding: 22px; box-shadow: var(--shadow-card); margin-bottom: 18px;
+  border-radius: 20px; padding: 22px; box-shadow: var(--shadow-card); margin-bottom: 16px;
+  display: flex; flex-direction: column;
 }
-.step-hero__meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.step-card__meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .step-hero__label { font: 600 11px/1 var(--sans); letter-spacing: 1.4px; color: var(--mode); }
 .step-hero__dots { display: flex; gap: 4px; }
 .step-hero__dots span { width: 16px; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--mode-deep) 18%, transparent); }
 .step-hero__dots span.done { background: var(--mode); }
-.step-hero__text { font-family: var(--serif); font-size: 25px; line-height: 1.32; color: var(--mode-ink); }
+.step-card__text {
+  font-family: var(--serif); font-size: 25px; line-height: 1.32; color: var(--mode-ink);
+  min-height: 3.9em; /* holds height across steps so the card doesn't jump */
+}
+.step-card__nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 18px; padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--mode-deep) 10%, transparent);
+}
+.step-card__arrow {
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--mode-deep) 18%, transparent);
+  background: color-mix(in srgb, #fff 70%, transparent);
+  color: var(--mode-deep); font-size: 22px; line-height: 1; cursor: pointer;
+}
+.step-card__arrow:disabled { opacity: 0.32; cursor: default; }
+.step-card__hint { font: 500 12px/1.3 var(--sans); color: color-mix(in srgb, var(--mode-ink) 50%, transparent); text-align: center; }
 
 /* shopping: progress + checklist */
 .shop-progress {
@@ -339,30 +367,42 @@
   border: 2px solid #B8C2B5; }
 .check-row__name { flex: 1; min-width: 0; font-size: 15px; color: color-mix(in srgb, var(--ink) 80%, transparent); }
 .check-row__qty { font-size: 13px; color: var(--faint); }
-.check-row__sub { display: block; font-size: 12.5px; margin-top: 2px; }
+.check-row__sub { display: block; font-size: 12.5px; margin-top: 2px; color: var(--faint); }
+/* the status column — same slot in every row, so it reads as a column */
+.check-row__status {
+  flex-shrink: 0; font: 600 11px/1 var(--sans); letter-spacing: .3px;
+  padding: 5px 9px; border-radius: 999px; white-space: nowrap;
+  background: color-mix(in srgb, var(--mode-deep) 7%, transparent); color: var(--faint);
+}
 /* — states — */
 .check-row.is-have { background: color-mix(in srgb, #fff 55%, var(--sage-soft)); }
 .check-row.is-have .check-row__mark { background: var(--sage); border-color: var(--sage); color: #fff; }
 .check-row.is-have .check-row__name { color: var(--sage-ink); }
+.check-row.is-have .check-row__status { background: var(--sage); color: #fff; }
 .check-row.is-swap { background: #EEF2EC; border-color: #D7E1D4; }
 .check-row.is-swap .check-row__mark { background: var(--sage); border-color: var(--sage); color: #fff; }
 .check-row.is-swap .old { text-decoration: line-through; color: #9aa398; }
 .check-row.is-swap .new { color: var(--sage-ink); font-weight: 700; }
-.check-row.is-swap .check-row__sub { color: var(--sage); }
+.check-row.is-swap .check-row__status { background: color-mix(in srgb, var(--sage) 18%, transparent); color: var(--sage-deep); }
 .check-row.is-partial { background: var(--amber-soft); border-color: var(--amber-line); }
 .check-row.is-partial .check-row__mark { border-color: #C9A24B; color: var(--amber); font-weight: 700; }
 .check-row.is-partial .check-row__sub { color: var(--amber); }
+.check-row.is-partial .check-row__status { background: color-mix(in srgb, var(--amber) 20%, transparent); color: #7A5A14; }
 .check-row.is-skip { opacity: 1; }
 .check-row.is-skip .check-row__mark { border-color: #CDBFB0; color: #A89A88; }
-.check-row.is-skip .check-row__name { text-decoration: line-through; color: var(--faint); }
+/* strike only the label — see the note in VoiceSession on why it's a sibling */
+.check-row.is-skip .check-row__label { text-decoration: line-through; color: var(--faint); }
 .check-row.is-skip .check-row__sub { color: #A89A88; }
-.check-row__action { border: none; background: transparent; color: var(--sage); font: 600 13px/1 var(--sans); flex-shrink: 0; }
-.check-row__skip { border: 1px solid #C9D0C6; background: transparent; color: #7C9080;
-  border-radius: 999px; padding: 5px 12px; font: 600 12px/1 var(--sans); flex-shrink: 0; }
+.check-row__action {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; border: none;
+  background: transparent; color: var(--faint); font-size: 14px; line-height: 1; cursor: pointer;
+}
 
 /* listening / speaking bar */
 .live-bar {
-  display: flex; align-items: center; gap: 14px; margin-top: 16px; padding: 14px 18px;
+  /* auto keeps it pinned to the bottom now that the cooking log no longer
+     stretches to fill; collapses to the 16px gap when space is already used */
+  display: flex; align-items: center; gap: 14px; margin-top: auto; padding: 14px 18px;
   border-radius: 16px; background: var(--mode-deep); color: #fff;
   box-shadow: 0 10px 24px color-mix(in srgb, var(--mode-deep) 26%, transparent);
 }
@@ -379,6 +419,9 @@
 
 /* transcript / tool log */
 .log { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 9px; }
+/* a glance-able tail of the conversation, not a transcript to read */
+.log--compact { flex: 0 1 auto; justify-content: flex-end; gap: 7px; overflow: hidden; margin-bottom: 16px; }
+.log--compact .log-entry { font-size: 13.5px; padding: 9px 12px; max-width: 92%; }
 .log__label { font: 600 11px/1 var(--sans); letter-spacing: 1.4px; text-transform: uppercase;
   color: color-mix(in srgb, var(--mode) 60%, var(--muted)); }
 .log-entry { max-width: 88%; padding: 11px 14px; font-size: 14.5px; line-height: 1.4; }
@@ -553,7 +596,7 @@
 @media (min-width: 768px) {
   .landing, .auth, .recipe-library, .app-screen, .voice-session { padding-left: max(24px, calc((100vw - 560px) / 2)); padding-right: max(24px, calc((100vw - 560px) / 2)); }
   .landing__brand, .recipe-input, .recipe-search, .recipe-library__list,
-  .confirm__head, .mode-toggle, .step-hero, .shop-progress, .check-list, .log,
+  .confirm__head, .mode-toggle, .step-card, .shop-progress, .check-list, .log,
   .auth__brand, .auth__methods, .auth__foot { max-width: 560px; margin-left: auto; margin-right: auto; width: 100%; }
   .landing h1 { font-size: 44px; }
   /* wrap-up becomes a centred modal card rather than a full-width sheet */
