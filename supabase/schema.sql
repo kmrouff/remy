@@ -44,3 +44,21 @@ create policy "own recipes: update" on public.recipes
 drop policy if exists "own recipes: delete" on public.recipes;
 create policy "own recipes: delete" on public.recipes
   for delete using (auth.uid() = user_id);
+
+-- Failure reports from the app itself (voice sessions dying server-side).
+-- Insert-only for the browser key: no select policy exists, so reports are
+-- readable only from the Supabase dashboard. Nothing personal is stored.
+create table if not exists public.error_reports (
+  id         uuid        primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  kind       text        not null,   -- 'quota' | 'server' | 'mic'
+  detail     text,
+  mode       text,                   -- shopping | cooking
+  user_agent text
+);
+
+alter table public.error_reports enable row level security;
+
+drop policy if exists "error reports: insert" on public.error_reports;
+create policy "error reports: insert" on public.error_reports
+  for insert with check (true);

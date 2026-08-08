@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { startVoiceSession } from '../lib/elevenlabs'
 import { shareRecipe } from '../lib/share'
+import { classifyVoiceError, friendlyVoiceError, reportVoiceError } from '../lib/errorReports'
 
 const AGENT_ID = import.meta.env.VITE_ELEVENLABS_AGENT_ID
 
@@ -135,6 +136,9 @@ export default function VoiceSession({
   // the network) ending it on its own.
   const intentionalDisconnectRef = useRef(false)
   const limitTimerRef = useRef(null)
+  // One report per session: the SDK can fire onError several times as a call
+  // collapses, and a burst of identical rows helps nobody.
+  const reportedRef = useRef(false)
   // cookingStepIndex means "the step you're on", so the card on screen always
   // matches what Remy just read. That requires knowing whether a step has
   // been read *this session*: the first call serves the current index (on a
@@ -249,10 +253,18 @@ export default function VoiceSession({
             onModeChange: ({ mode: speakingMode }) => setAgentMode(speakingMode),
             onMessage: ({ message, role }) => appendLog({ type: role, text: message }),
             onError: (message, context) => {
-              const detail = [context?.errorType, context?.debugMessage, context?.details]
+              const detail = [message, context?.errorType, context?.debugMessage, context?.details]
                 .filter(Boolean)
                 .join(' — ')
-              setError(detail ? `${message} (${detail})` : message)
+              const kind = classifyVoiceError(detail)
+              // Server-side failures are never the user's fault, and the raw
+              // SDK strings ("Server error: Unknown error") read like they
+              // might be. Say whose problem it is, and file it.
+              setError(friendlyVoiceError(kind, detail))
+              if (!reportedRef.current && kind !== 'mic') {
+                reportedRef.current = true
+                reportVoiceError({ kind, detail, mode: stateRef.current.mode })
+              }
             },
           },
         })
@@ -266,11 +278,13 @@ export default function VoiceSession({
           `${recipeContext(r, { mode: m, cookingStepIndex: i, resumed })}\n\n${MODE_CONTEXT[m]}`
         )
       } catch (e) {
-        setError(
-          e?.name === 'NotAllowedError' || /permission/i.test(String(e?.message))
-            ? 'Your microphone needs permission. Allow access in your browser settings, then try again.'
-            : e?.message || 'Could not start the voice session.'
-        )
+        const detail = e?.name ? `${e.name}: ${e?.message || ''}` : String(e?.message || e || '')
+        const kind = classifyVoiceError(detail)
+        setError(friendlyVoiceError(kind, detail))
+        if (!reportedRef.current && kind !== 'mic') {
+          reportedRef.current = true
+          reportVoiceError({ kind, detail, mode: stateRef.current.mode })
+        }
         setStatus('disconnected')
       }
     }

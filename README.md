@@ -72,4 +72,4 @@ VITE_SUPABASE_ANON_KEY=     # optional
 ```
 
 Accounts also need `supabase/schema.sql` run in the Supabase SQL editor, which
-creates the recipes table and its RLS policies.
+creates the tables and their RLS policies.
