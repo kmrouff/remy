@@ -1,0 +1,4 @@
+# Vercel does not read .gitignore, so the source screen recordings in raw/
+# would otherwise be uploaded with every deploy and blow the 100MB limit.
+raw/
+design_handoff_remy_redesign/
